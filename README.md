@@ -2,6 +2,9 @@
 
 A community-driven collection of lightweight, HTML-based interfaces inspired by Cisco network controllers and management platforms.
 
+![Uploading image.png…]()
+
+
 ## Overview
 
 Exploring menus and navigating the interface of a Cisco controller can sometimes require access to the actual platform. This project aims to make that process easier by collecting standalone HTML interfaces that let network engineers, students, and enthusiasts explore controller layouts directly in a web browser.
