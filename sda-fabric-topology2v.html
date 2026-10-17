@@ -1,0 +1,1713 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SD-Access Fabric Topology — C9500-24Y4C CP/Border · C9400 Intermediate · C9300 Edge · 2,000 users</title>
+<style>
+:root{
+  --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  --bg:#FFFFFF;--bg-soft:#F9F8F7;--bg-muted:#F0EFED;--border:#E6E5E3;--border-strong:#D3D1CC;
+  --text:#2C2C2B;--text-2:#6F6C67;--text-3:#8A8781;
+  --accent:#2783DE;--accent-soft:#E5F2FC;--accent-ink:#1F6FBF;
+  --cp:#1D4F91;--cp-fill:#1D4F91;--cp-soft:#EEF3FA;--cp-line:#B9CCE6;
+  --int:#5B4BB7;--int-fill:#5B4BB7;--int-soft:#F4F2FC;--int-line:#CFC8EE;
+  --en:#0E7C7B;--en-fill:#0E7C7B;--en-soft:#EAF5F4;--en-line:#B6DCDA;
+  --ext:#6B6A66;--ext-soft:#F3F2F0;
+  --l100:#E8590C;--l25:#9C36B5;--l10:#1C7ED6;--lcu:#A0522D;--lho:#868E96;
+  --warn-bg:#FFF4E5;--warn-text:#8A4B00;--warn-border:#F5D3A3;
+  --canvas:#FBFAF9;--grid:#E9E7E3;--card:#FFFFFF;
+  --tip-bg:#2C2C2B;--tip-text:#FFFFFF;--tip-2:#C9C6C0;
+  --shadow:0 1px 2px rgba(0,0,0,.04),0 12px 32px rgba(0,0,0,.10);
+  --radius:8px;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#191919;--bg-soft:#202020;--bg-muted:#2A2A28;--border:#353431;--border-strong:#4A4843;
+--text:#ECEBE8;--text-2:#ABA8A2;--text-3:#8E8B85;
+--accent:#4DA3F0;--accent-soft:#1B2C3D;--accent-ink:#7DB9F4;
+--cp:#86B3EC;--cp-fill:#24456E;--cp-soft:#18212D;--cp-line:#2F4A6E;
+--int:#B3A9F3;--int-fill:#4A3D8F;--int-soft:#1F1C2E;--int-line:#433A6E;
+--en:#5FCBC8;--en-fill:#13615F;--en-soft:#14292A;--en-line:#265553;
+--ext:#A3A19C;--ext-soft:#242320;
+--l100:#FF8A3D;--l25:#D17BE6;--l10:#4DABF7;--lcu:#D2875A;--lho:#ADB5BD;
+--warn-bg:#33270F;--warn-text:#F2C47E;--warn-border:#5A4419;
+--canvas:#1C1C1B;--grid:#2B2A28;--card:#232322;
+--tip-bg:#33332F;--tip-text:#F2F1EE;--tip-2:#B5B2AB;
+--shadow:0 1px 2px rgba(0,0,0,.3),0 12px 32px rgba(0,0,0,.5);
+color-scheme:dark;}}
+:root[data-theme="dark"]{--bg:#191919;--bg-soft:#202020;--bg-muted:#2A2A28;--border:#353431;--border-strong:#4A4843;
+--text:#ECEBE8;--text-2:#ABA8A2;--text-3:#8E8B85;
+--accent:#4DA3F0;--accent-soft:#1B2C3D;--accent-ink:#7DB9F4;
+--cp:#86B3EC;--cp-fill:#24456E;--cp-soft:#18212D;--cp-line:#2F4A6E;
+--int:#B3A9F3;--int-fill:#4A3D8F;--int-soft:#1F1C2E;--int-line:#433A6E;
+--en:#5FCBC8;--en-fill:#13615F;--en-soft:#14292A;--en-line:#265553;
+--ext:#A3A19C;--ext-soft:#242320;
+--l100:#FF8A3D;--l25:#D17BE6;--l10:#4DABF7;--lcu:#D2875A;--lho:#ADB5BD;
+--warn-bg:#33270F;--warn-text:#F2C47E;--warn-border:#5A4419;
+--canvas:#1C1C1B;--grid:#2B2A28;--card:#232322;
+--tip-bg:#33332F;--tip-text:#F2F1EE;--tip-2:#B5B2AB;
+--shadow:0 1px 2px rgba(0,0,0,.3),0 12px 32px rgba(0,0,0,.5);
+color-scheme:dark;}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;font-family:var(--font);font-size:15px;line-height:1.55;color:var(--text);background:var(--bg)}
+a{color:var(--accent-ink)}
+a:focus-visible,button:focus-visible,summary:focus-visible,.canvas:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+h1,h2,h3,h4{line-height:1.25;margin:0}
+.mono{font-family:var(--mono);font-size:.92em}
+.wrap{max-width:1240px;margin:0 auto;padding:0 24px}
+.wrap-wide{max-width:1680px;margin:0 auto;padding:0 24px}
+.muted{color:var(--text-2)}
+.small{font-size:13px}
+
+/* hero */
+.hero{padding-top:40px;padding-bottom:28px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-ink);margin-bottom:10px}
+.hero h1{font-size:32px;font-weight:700;letter-spacing:-.01em;max-width:980px}
+.lede{font-size:16px;color:var(--text-2);max-width:880px;margin:12px 0 24px}
+.role-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.role-card{display:flex;gap:14px;align-items:flex-start;border:1px solid var(--border);border-left:4px solid var(--rc);border-radius:var(--radius);padding:14px 16px;background:var(--bg)}
+.role-card.cp{--rc:var(--cp)}.role-card.int{--rc:var(--int)}.role-card.en{--rc:var(--en)}
+.rc-count{font-size:34px;font-weight:800;line-height:1;color:var(--rc);min-width:64px}
+.rc-role{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--rc)}
+.rc-model{font-size:15px;font-weight:600;margin-top:2px}
+.rc-sub{font-size:13px;color:var(--text-2);margin-top:2px}
+.kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin:16px 0 0;padding:0}
+.kpis div{background:var(--bg-soft);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px}
+.kpis dt{font-size:12px;color:var(--text-2)}
+.kpis dd{margin:2px 0 0;font-size:17px;font-weight:650}
+
+/* nav */
+.secnav{position:sticky;top:0;z-index:30;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:saturate(1.2) blur(8px);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.secnav ul{list-style:none;margin:0 auto;padding:0 16px;display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;max-width:1680px}
+.secnav ul::-webkit-scrollbar{display:none}
+.secnav a{display:flex;align-items:center;min-height:44px;padding:0 12px;white-space:nowrap;color:var(--text-2);text-decoration:none;font-size:14px;font-weight:500;border-bottom:2px solid transparent}
+.secnav a:hover{color:var(--text)}
+.secnav a.cur{color:var(--text);border-bottom-color:var(--accent)}
+
+/* sections */
+.section{padding:44px 0;border-bottom:1px solid var(--border);scroll-margin-top:48px}
+.sec-head{margin-bottom:18px}
+.sec-head h2{font-size:24px;font-weight:700}
+.sec-head p{margin:6px 0 0;color:var(--text-2);max-width:900px}
+.sub-h{font-size:17px;font-weight:650;margin:28px 0 10px}
+
+/* topology */
+.topo-shell{border:1px solid var(--border);border-radius:12px;overflow:hidden;background:var(--bg)}
+.toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;padding:10px 12px;border-bottom:1px solid var(--border);background:var(--bg-soft)}
+.tb-group{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.tgl{white-space:nowrap}
+.h-touch{display:none}
+@media (hover:none) and (pointer:coarse){.h-mouse{display:none}.h-touch{display:inline}}
+.btn{font:inherit;font-size:14px;font-weight:500;color:var(--text);background:var(--bg);border:1px solid var(--border-strong);border-radius:6px;min-height:44px;min-width:44px;padding:0 12px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.btn:hover{background:var(--bg-muted)}
+.btn.icon{font-size:20px;line-height:1;padding:0}
+.zoom-out{min-width:56px;text-align:center;font-variant-numeric:tabular-nums;font-size:13px;color:var(--text-2)}
+.tgl[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent);color:var(--accent-ink)}
+.tgl .ck{width:14px;height:14px;border-radius:3px;border:1.5px solid currentColor;display:inline-block;position:relative}
+.tgl[aria-pressed="true"] .ck::after{content:"";position:absolute;left:3px;top:0;width:4px;height:8px;border:solid currentColor;border-width:0 2px 2px 0;transform:rotate(45deg)}
+.tb-hint{font-size:13px;color:var(--text-2);margin-left:auto}
+.legend{display:flex;flex-wrap:wrap;gap:4px 6px;padding:8px 10px;border-bottom:1px solid var(--border);align-items:center}
+.legend .lg-title{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-2);margin:0 4px 0 6px}
+.legend .sep{width:1px;height:24px;background:var(--border);margin:0 6px}
+.lg{font:inherit;font-size:13px;color:var(--text);background:transparent;border:1px solid transparent;border-radius:6px;min-height:40px;padding:0 10px;display:inline-flex;align-items:center;gap:8px;cursor:pointer}
+.lg:hover{background:var(--bg-muted)}
+.lg[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent)}
+.lg svg{flex:none}
+.sw{width:14px;height:14px;border-radius:4px;flex:none}
+.sw.cp{background:var(--cp-fill)}.sw.int{background:var(--int-fill)}.sw.en{background:var(--en-fill)}.sw.ext{background:transparent;border:1.5px dashed var(--ext)}
+.canvas{position:relative;width:100%;aspect-ratio:1600/1120;background:var(--canvas);cursor:grab;touch-action:pan-y;user-select:none;-webkit-user-select:none;overflow:hidden}
+.canvas.zoomed{touch-action:none}
+.canvas.panning{cursor:grabbing}
+.canvas svg{display:block;width:100%;height:100%}
+.canvas-hint{position:absolute;left:50%;top:14px;transform:translateX(-50%);background:var(--tip-bg);color:var(--tip-text);font-size:13px;padding:8px 12px;border-radius:6px;pointer-events:none;opacity:0;transition:opacity .2s}
+.canvas-hint.show{opacity:.92}
+.topo-foot{display:flex;flex-wrap:wrap;gap:6px 18px;padding:10px 14px;font-size:13px;color:var(--text-2);border-top:1px solid var(--border);background:var(--bg-soft)}
+.topo-foot b{color:var(--text);font-weight:600}
+
+/* svg */
+#topo{font-family:var(--font)}
+#topo .bgrect{fill:var(--canvas)}
+#topo .gdot{fill:var(--grid)}
+#topo .cardbg{fill:var(--card)}
+#topo .card{fill:none;stroke:var(--border-strong);stroke-width:1}
+#topo .dev{cursor:pointer;outline:none}
+#topo .dev:hover .card{stroke:var(--accent);stroke-width:1.6}
+#topo .dev:focus-visible .card,#topo .dev.sel .card{stroke:var(--accent);stroke-width:2.6}
+#topo .hdr-cp{fill:var(--cp-fill)}#topo .hdr-int{fill:var(--int-fill)}#topo .hdr-en{fill:var(--en-fill)}
+#topo .hdr-enx{fill:var(--en-soft)}
+#topo .h-name{fill:#fff;font-weight:700;font-size:15px}
+#topo .h-name.s{font-size:12.5px}
+#topo .h-name.x{fill:var(--en);font-size:12px}
+#topo .h-role{fill:rgba(255,255,255,.88);font-size:9.5px;font-weight:700;letter-spacing:.08em}
+#topo .h-role.s{font-size:8.5px}
+#topo .t-model{fill:var(--text);font-size:12.5px;font-weight:650}
+#topo .t-model.s{font-size:12px}
+#topo .t-sub{fill:var(--text-2);font-size:10.5px}
+#topo .t-sub.s{font-size:10px}
+#topo .t-cap{fill:var(--text-2);font-size:8.5px}
+#topo .t-mono{fill:var(--text-2);font-family:var(--mono);font-size:9.5px}
+#topo .t-mono.s{font-size:9px}
+#topo .t-slot{fill:var(--text);font-size:9px;font-weight:700}
+#topo .t-sl{fill:var(--text-3);font-size:9px;font-weight:700}
+#topo .t-empty{fill:var(--text-3);font-size:8.5px}
+#topo .t-dots{fill:var(--en);font-size:18px;font-weight:800;letter-spacing:.2em}
+#topo .slot{fill:var(--bg-soft);stroke:var(--border-strong);stroke-width:.8}
+#topo .slot.empty{fill:none;stroke-dasharray:3 3}
+#topo .port{fill:var(--card);stroke:var(--text-3);stroke-width:.7}
+#topo .port.u100{fill:var(--l100);stroke:none}
+#topo .port.u25{fill:var(--l25);stroke:none}
+#topo .port.u10{fill:var(--l10);stroke:none}
+#topo .port.uho{fill:var(--lho);stroke:none}
+#topo .port.off{fill:var(--bg-muted);stroke:var(--text-3);stroke-dasharray:1.2 1.2}
+#topo .port.cu{fill:var(--lcu);stroke:none}
+#topo .xmark{stroke:var(--text-3);stroke-width:.9}
+#topo .pg{stroke:var(--card);stroke-width:1}
+#topo .pg.l100{fill:var(--l100)}#topo .pg.l25{fill:var(--l25)}#topo .pg.l10{fill:var(--l10)}#topo .pg.lho{fill:var(--lho)}#topo .pg.lcu{fill:var(--lcu)}
+#topo .enx .card{stroke-dasharray:5 4;stroke:var(--en-line);stroke-width:1.4}
+#topo .ext .cardbg{fill:var(--ext-soft)}
+#topo .ext .card{stroke:var(--ext);stroke-dasharray:4 4}
+#topo .t-ext{fill:var(--text);font-size:13px;font-weight:650}
+#topo .link{cursor:pointer;outline:none}
+#topo .link .ln{fill:none;stroke-linecap:round;transition:stroke-width .12s}
+#topo .link.l100 .ln{stroke:var(--l100);stroke-width:5}
+#topo .link.l25 .ln{stroke:var(--l25);stroke-width:3.2}
+#topo .link.l10 .ln{stroke:var(--l10);stroke-width:2.1}
+#topo .link.lb10 .band{fill:none;stroke:var(--l10);stroke-width:13;opacity:.2;stroke-linecap:round}
+#topo .link.lb10 .ln{stroke:var(--l10);stroke-width:2.1}
+#topo .link.lcu .ln{stroke:var(--lcu);stroke-width:2;stroke-dasharray:5 4;stroke-linecap:butt}
+#topo .link.lho .ln{stroke:var(--lho);stroke-width:2.6;stroke-dasharray:.5 5}
+#topo .link .hit{fill:none;stroke:transparent;stroke-width:16;pointer-events:stroke}
+#topo .link:hover .ln,#topo .link:focus-visible .ln,#topo .link.sel .ln{stroke-width:var(--hw,6)}
+#topo .link.l100{--hw:8}#topo .link.l25{--hw:5.5}#topo .link.l10,#topo .link.lb10,#topo .link.lcu{--hw:4}#topo .link.lho{--hw:4}
+#topo .link.sel .ln{filter:drop-shadow(0 0 3px var(--accent))}
+#topo .dim{opacity:.14}
+#topo .dev,#topo .link,#topo .pill,#topo .plabel{transition:opacity .15s}
+#topo .pill rect{fill:var(--card);stroke:currentColor;stroke-width:1.2}
+#topo .pill text{fill:currentColor;font-size:9.5px;font-weight:700}
+#topo .pill.l100{color:var(--l100)}#topo .pill.l25{color:var(--l25)}#topo .pill.l10,#topo .pill.lb10{color:var(--l10)}#topo .pill.lho{color:var(--text-2)}
+#topo .halo{paint-order:stroke;stroke:var(--canvas);stroke-width:3.5px;stroke-linejoin:round}
+#topo .halo-int{paint-order:stroke;stroke:var(--int-soft);stroke-width:4px;stroke-linejoin:round}
+#topo .hitbox{fill:transparent}
+#topo .plabel{font-family:var(--mono);font-size:9px;fill:var(--text-2)}
+#topo .badge .b{fill:var(--card);stroke:var(--border)}
+#topo .badge .bar{fill:var(--bc)}
+#topo .badge.cp{--bc:var(--cp)}#topo .badge.int{--bc:var(--int)}#topo .badge.en{--bc:var(--en)}#topo .badge.ext,#topo .badge.core{--bc:var(--text-3)}
+#topo .b-count{fill:var(--bc);font-size:31px;font-weight:800}
+#topo .b-role{fill:var(--bc);font-size:10px;font-weight:700;letter-spacing:.08em}
+#topo .b-model{fill:var(--text);font-size:11.5px;font-weight:650}
+#topo .b-sub{fill:var(--text-2);font-size:10px}
+#topo .grp rect{fill:var(--int-soft);stroke:var(--int-line);stroke-width:1.2;stroke-dasharray:6 4}
+#topo .grp-t1{fill:var(--int);font-size:10px;font-weight:700;letter-spacing:.07em}
+#topo .grp-t2{fill:var(--text-2);font-size:10px}
+#topo .chip rect{fill:var(--card);stroke:var(--lcu);stroke-width:1}
+#topo .chip .c1{fill:var(--lcu);font-size:10.5px;font-weight:700}
+#topo .chip .c2{fill:var(--text-2);font-size:9px}
+#topo .brk{fill:none;stroke:var(--en-line);stroke-width:1.5}
+#topo .brk-t{fill:var(--text-2);font-size:10.5px}
+#topo .total-t{fill:var(--en);font-size:19px;font-weight:800;letter-spacing:.06em}
+#topo .total-s{fill:var(--text-2);font-size:11px}
+#topo .total-ln{stroke:var(--en);stroke-width:2}
+#topo.hide-ports .plabel{display:none}
+#topo.hide-speeds .pill{display:none}
+#topo.hide-access .acc{display:none}
+
+/* tooltip */
+.tip{position:fixed;left:0;top:0;z-index:70;pointer-events:none;max-width:340px;background:var(--tip-bg);color:var(--tip-text);border-radius:8px;padding:10px 12px;font-size:12.5px;line-height:1.45;box-shadow:var(--shadow)}
+.tip[hidden]{display:none}
+.tip .tt-t{font-weight:700;font-size:13px;margin-bottom:4px}
+.tip .tt-s{color:var(--tip-2)}
+.tip .tt-ends{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:start;margin:6px 0}
+.tip .tt-ends b{display:block}
+.tip .tt-ends .mono{display:block;font-size:12px}
+.tip .tt-arrow{color:var(--tip-2);padding-top:12px}
+.tip .tt-f{color:var(--tip-2);font-size:11.5px;margin-top:4px}
+
+/* drawer */
+.drawer{position:fixed;top:12px;right:12px;bottom:12px;width:min(460px,calc(100vw - 24px));background:var(--bg);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow);z-index:60;display:flex;flex-direction:column;transform:translateX(calc(100% + 32px));transition:transform .22s ease;visibility:hidden}
+.drawer.open{transform:none;visibility:visible}
+.d-head{position:relative;padding:16px 64px 14px 18px;border-bottom:1px solid var(--border)}
+.d-head h3{font-size:20px;font-weight:700;margin-top:6px}
+.d-sub{margin:4px 0 0;color:var(--text-2);font-size:13.5px}
+.d-close{position:absolute;top:10px;right:10px}
+.d-body{overflow-y:auto;padding:4px 18px 24px;overscroll-behavior:contain}
+.d-sec{padding:14px 0;border-bottom:1px solid var(--border)}
+.d-sec:last-child{border-bottom:0}
+.d-sec h4{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-2);margin-bottom:8px}
+.d-sec p{margin:0 0 8px;font-size:14px}
+.d-sec .kv + p,.d-sec .kv + .note{margin-top:10px}
+.d-sec p.note{font-size:13px}
+.kv{margin:0;display:grid;gap:6px}
+.kv div{display:grid;grid-template-columns:132px 1fr;gap:10px;font-size:13.5px}
+.kv dt{color:var(--text-2)}
+.kv dd{margin:0}
+.chip-role{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:3px 8px;border-radius:999px;white-space:nowrap;background:var(--cs);color:var(--cc)}
+.chip-role.cp{--cs:var(--cp-soft);--cc:var(--cp)}.chip-role.int{--cs:var(--int-soft);--cc:var(--int)}.chip-role.en{--cs:var(--en-soft);--cc:var(--en)}.chip-role.ext{--cs:var(--ext-soft);--cc:var(--ext)}
+.chip-role.lk{--cs:var(--bg-muted);--cc:var(--text-2)}
+.lk-dot{width:18px;height:4px;border-radius:2px;background:var(--lc);display:inline-block}
+.pcards{display:grid;grid-template-columns:1fr 28px 1fr;gap:6px;align-items:stretch}
+.pc-arrow{display:flex;align-items:center;justify-content:center;color:var(--text-3);font-size:18px}
+.pcard{border:1px solid var(--border);border-top:3px solid var(--pc);border-radius:8px;padding:10px 12px;background:var(--bg-soft);font-size:13px;line-height:1.5;min-width:0}
+.pcard.fi{--pc:var(--l10)}.pcard.fi.s100{--pc:var(--l100)}.pcard.fi.s25{--pc:var(--l25)}.pcard.cu{--pc:var(--lcu)}.pcard.ho{--pc:var(--lho)}
+.pc-lbl{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-2)}
+.pc-dev{font-weight:700;font-size:14px}
+.pc-model{color:var(--text-2);font-size:12.5px}
+.pc-if{font-family:var(--mono);font-size:14px;font-weight:600;margin-top:4px}
+.pc-long{font-family:var(--mono);font-size:11.5px;color:var(--text-2);word-break:break-all}
+.pc-type{margin-top:4px}
+.pc-med{display:flex;align-items:center;gap:6px;font-weight:600}
+.pc-med i{width:10px;height:10px;border-radius:50%;background:var(--pc);display:inline-block}
+.pc-speed{font-weight:700}
+.pc-dir{display:inline-block;margin-top:6px;font-size:11.5px;font-weight:700;padding:1px 7px;border-radius:4px;background:var(--bg-muted);color:var(--text-2)}
+.d-table{width:100%;border-collapse:collapse;font-size:12.5px}
+.d-table th{text-align:left;font-weight:600;color:var(--text-2);padding:6px 6px;border-bottom:1px solid var(--border)}
+.d-table td{padding:6px 6px;border-bottom:1px solid var(--border);vertical-align:top}
+.d-table td.mono{white-space:nowrap}
+.d-refs{font-size:12.5px;color:var(--text-2)}
+.d-refs a{margin-right:8px}
+.note{font-size:13px;color:var(--text-2)}
+
+/* tables */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg)}
+table.t{width:100%;border-collapse:separate;border-spacing:0;font-size:13.5px}
+table.t th{position:sticky;top:0;background:var(--bg-soft);text-align:left;font-weight:650;font-size:12.5px;color:var(--text-2);padding:10px 12px;border-bottom:1px solid var(--border);white-space:nowrap}
+table.t td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+table.t tr:last-child td{border-bottom:0}
+table.t tr.grp td{background:var(--bg-soft);font-weight:650;font-size:12.5px;letter-spacing:.02em;color:var(--text)}
+table.t td .sub{display:block;color:var(--text-2);font-size:12.5px}
+table.t .num{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.tbl-bleed{margin-inline:min(0px,calc((1240px - min(100vw,1480px)) / 2))}
+.t-tcam td{min-width:132px}
+.t-tcam td:first-child{min-width:150px}
+.t-tcam td:nth-child(2){min-width:140px}
+.t-tcam td:nth-child(3){min-width:250px}
+.t-tcam td:last-child{min-width:240px}
+.t-tcam th:first-child,.t-tcam td:first-child{position:sticky;left:0;z-index:1;background:var(--bg);box-shadow:1px 0 0 var(--border)}
+.t-tcam th:first-child{z-index:3;background:var(--bg-soft)}
+table.t th{z-index:2}
+.t-links td{min-width:120px}
+.t-links td:first-child{min-width:44px;width:44px}
+.t-links td:nth-child(6){min-width:56px}
+.dep{display:inline-block;background:var(--warn-bg);color:var(--warn-text);border:1px solid var(--warn-border);border-radius:4px;padding:1px 6px;font-size:12px;font-weight:600;line-height:1.45}
+.na{color:var(--text-3)}
+.ref{font-size:11px;vertical-align:super;line-height:0;margin-left:1px}
+.ref a{text-decoration:none;font-weight:600}
+.med{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.med i{display:inline-block;width:20px;height:0;border-top:3px solid var(--mc)}
+.med.cu i{border-top:2px dashed var(--lcu)}
+.med.f100{--mc:var(--l100)}.med.f25{--mc:var(--l25)}.med.f10{--mc:var(--l10)}.med.ho i{border-top:2.5px dotted var(--lho)}
+details.more{margin-top:12px;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg)}
+details.more>summary{cursor:pointer;min-height:44px;display:flex;align-items:center;padding:0 14px;font-weight:600;font-size:14px;list-style:none}
+details.more>summary::-webkit-details-marker{display:none}
+details.more>summary::before{content:"";width:7px;height:7px;border:solid var(--text-2);border-width:0 2px 2px 0;transform:rotate(-45deg);margin-right:12px;transition:transform .15s}
+details.more[open]>summary::before{transform:rotate(45deg)}
+details.more .inner{padding:0 14px 14px}
+details.more .tbl-wrap{max-height:520px;overflow:auto}
+
+/* capacity */
+.ladder{display:grid;gap:10px;margin:6px 0 22px}
+.rung{display:grid;grid-template-columns:220px 1fr 150px;gap:14px;align-items:center}
+.rung .lbl{font-size:14px;font-weight:600}
+.rung .lbl small{display:block;font-weight:400;color:var(--text-2);font-size:12.5px}
+.bar{height:22px;background:var(--bg-muted);border-radius:4px;overflow:hidden}
+.bar span{display:block;height:100%;background:var(--bc);border-radius:4px}
+.rung .val{font-weight:700;font-variant-numeric:tabular-nums;font-size:14px}
+.rung .val small{display:block;font-weight:400;color:var(--text-2);font-size:12.5px}
+.ratio{grid-column:2/3;font-size:12.5px;color:var(--text-2);display:flex;align-items:center;gap:8px;margin:-4px 0}
+.ratio b{color:var(--text);background:var(--bg-muted);border-radius:4px;padding:1px 7px;font-variant-numeric:tabular-nums}
+
+/* CP highlight */
+.highlight{border:1px solid var(--cp-line);border-left:4px solid var(--cp);background:var(--cp-soft);border-radius:12px;padding:24px}
+.highlight .hl-tag{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--cp);margin-bottom:8px}
+.highlight h2{font-size:24px}
+.callout{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin:14px 0 18px;font-size:14.5px}
+.callout b{color:var(--text)}
+.hero .callout.decision{margin:18px 0 16px;border-left:4px solid var(--cp)}
+.res-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.res{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:16px}
+.res .r-k{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--cp)}
+.res .r-k i{font-style:normal;display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:6px;background:var(--cp-soft);color:var(--cp);font-size:12px;border:1px solid var(--cp-line)}
+.res h3{font-size:16px;margin:8px 0 6px}
+.res p{margin:0 0 8px;font-size:13.5px;color:var(--text-2)}
+.res ul{margin:0;padding-left:18px;font-size:13.5px}
+.res li{margin:3px 0}
+.highlight .tbl-wrap{margin-top:8px}
+pre.cmd{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;font-family:var(--mono);font-size:13px;overflow-x:auto;margin:8px 0 0;line-height:1.6}
+pre.cmd .c{color:var(--text-2)}
+
+/* notes */
+.notes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.note-card{border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;background:var(--bg)}
+.note-card h3{font-size:16px;font-weight:650;margin-bottom:8px;display:flex;gap:10px;align-items:baseline}
+.note-card h3 .n{font-size:12px;color:var(--text-2);font-weight:700;font-variant-numeric:tabular-nums}
+.note-card ul{margin:0;padding-left:18px;font-size:14px}
+.note-card li{margin:5px 0}
+.note-card.wide{grid-column:1/-1}
+.sources{margin:0;padding-left:22px;font-size:14px}
+.sources li{margin:8px 0}
+.sources .what{display:block;color:var(--text-2);font-size:13px}
+footer{padding:28px 0 48px;color:var(--text-2);font-size:13px}
+
+@media (max-width:1100px){
+  .role-cards{grid-template-columns:1fr}
+  .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .tb-hint{margin-left:0;flex-basis:100%}
+}
+@media (max-width:820px){
+  .notes,.res-grid{grid-template-columns:1fr}
+  .rung{grid-template-columns:1fr;gap:4px}
+  .ratio{grid-column:1/-1;margin:0}
+}
+@media (max-width:720px){
+  body{font-size:14.5px}
+  .wrap,.wrap-wide{padding:0 16px}
+  .hero{padding-top:28px;padding-bottom:20px}
+  .hero h1{font-size:25px}
+  .lede{font-size:15px}
+  .section{padding:32px 0}
+  .sec-head h2,.highlight h2{font-size:21px}
+  .highlight{padding:18px 16px}
+  .canvas{min-height:260px}
+  .drawer{top:auto;left:0;right:0;bottom:0;width:auto;max-height:80vh;border-radius:16px 16px 0 0;transform:translateY(105%)}
+  .kv div{grid-template-columns:110px 1fr}
+  .pcards{grid-template-columns:1fr}
+  .pc-arrow{transform:rotate(90deg);height:20px}
+  .legend .sep{display:none}
+  .legend{gap:0 4px;padding:6px 8px}
+  .lg{min-height:34px;padding:0 6px;font-size:12.5px;gap:6px}
+  .t-tcam td:first-child{min-width:112px}
+  .t-tcam td:nth-child(2){min-width:120px}
+  .tgl{padding:0 10px;font-size:13px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+
+</style>
+</head>
+<body>
+<header class="hero wrap">
+  <div class="eyebrow">Cisco SD-Access · Single fabric site · Physical &amp; hardware design</div>
+  <h1>SD-Access Fabric Topology — Interfaces, Throughput &amp; TCAM Resources</h1>
+  <p class="lede">One fabric site for about 2,000 users, built from 2 × Catalyst C9500-24Y4C nodes that combine the control plane, an anywhere border and the underlay core, 4 × Catalyst C9400 intermediate nodes in two groups, and 60 × Catalyst C9300 edge nodes. Every physical link with its exact interface, transceiver type, speed and aggregate capacity, plus the SDM/TCAM and SD-Access scale limits that apply, with Cisco sources.</p>
+  <div class="callout decision"><b>Design decision:</b> the control plane runs on the two C9500-24Y4C borders instead of on dedicated C9500-12Q nodes. About 8,000 endpoints is roughly 5% of the C9500-24Y4C's CP scale, while the C9500-12Q is end-of-sale and its IOS XE support ends with 17.18.<span class="ref"><a href="#src-11" title="Cisco Catalyst Center Data Sheet (SD-Access scale, release 2.3.7)">[11]</a></span><span class="ref"><a href="#src-15" title="End-of-Sale and End-of-Life Announcement for the Cisco C9500-12Q, C9500-24Q and C9500-40X">[15]</a></span> <a href="#cp-placement">Compare the options</a></div>
+  <div class="role-cards">
+    <div class="role-card cp"><div class="rc-count">2×</div><div><div class="rc-role">Control Plane + Border</div><div class="rc-model">Catalyst C9500-24Y4C</div><div class="rc-sub">CP/BN-1 · CP/BN-2 — co-located CP, anywhere border, underlay core</div></div></div>
+    <div class="role-card int"><div class="rc-count">4×</div><div><div class="rc-role">Intermediate Nodes</div><div class="rc-model">Catalyst C9400 — C9404R + C9400X-SUP-2XL + C9400-LC-48XS</div><div class="rc-sub">48-port 10G fiber line card · Group A: INT-A1 + INT-A2 · Group B: INT-B1 + INT-B2</div></div></div>
+    <div class="role-card en"><div class="rc-count">60×</div><div><div class="rc-role">Edge Nodes</div><div class="rc-model">Catalyst C9300-48U + C9300-NM-8X</div><div class="rc-sub">EN-1 – EN-30 → Group A · EN-31 – EN-60 → Group B</div></div></div>
+  </div>
+  <dl class="kpis">
+    <div><dt>Users behind the edge</dt><dd>≈ 2,000 (6–8K endpoints)</dd></div>
+    <div><dt>Fabric core (intermediate ↔ CP/BN)</dt><dd>8 × 100G = 800 Gbps</dd></div>
+    <div><dt>Edge uplinks</dt><dd>120 × 10G = 1.2 Tbps</dd></div>
+    <div><dt>Access ports</dt><dd>2,880 × 1G copper (UPOE)</dd></div>
+    <div><dt>Fabric devices in the site</dt><dd>62 (intermediates not counted)</dd></div>
+  </dl>
+</header>
+
+<nav class="secnav" aria-label="Sections">
+  <ul>
+    <li><a href="#topology">Topology</a></li>
+    <li><a href="#links">Interface &amp; link map</a></li>
+    <li><a href="#capacity">Throughput</a></li>
+    <li><a href="#tcam">TCAM</a></li>
+    <li><a href="#cp-resources">Control-plane resources</a></li>
+    <li><a href="#bom">Bill of materials</a></li>
+    <li><a href="#notes">Hardware &amp; design notes</a></li>
+    <li><a href="#sources">Sources</a></li>
+  </ul>
+</nav>
+
+<main>
+<section id="topology" class="section" aria-labelledby="h-topo">
+  <div class="wrap-wide">
+    <div class="sec-head">
+      <h2 id="h-topo">Physical topology</h2>
+      <p>A routed underlay in three tiers. Each edge node is dual-homed to both intermediates in its group, each intermediate has one 100G uplink to each CP/BN node, and each CP/BN node has one handoff to each fusion device. Hover over a device or link to see its ports, or click it for full details.</p>
+    </div>
+    <div class="topo-shell">
+      <div class="toolbar">
+        <div class="tb-group" role="group" aria-label="Zoom">
+          <button class="btn icon" id="zOut" aria-label="Zoom out">−</button>
+          <output class="zoom-out" id="zLvl" aria-live="polite">100%</output>
+          <button class="btn icon" id="zIn" aria-label="Zoom in">+</button>
+          <button class="btn" id="zFit">Fit</button>
+        </div>
+        <div class="tb-group" role="group" aria-label="Diagram layers">
+          <button class="btn tgl" aria-pressed="true" data-t="ports"><span class="ck" aria-hidden="true"></span>Port labels</button>
+          <button class="btn tgl" aria-pressed="true" data-t="speeds"><span class="ck" aria-hidden="true"></span>Speed labels</button>
+          <button class="btn tgl" aria-pressed="true" data-t="access"><span class="ck" aria-hidden="true"></span>Access ports</button>
+        </div>
+        <div class="tb-hint"><span class="h-mouse">Drag to pan · Ctrl/⌘ + scroll or pinch to zoom · Double-click to zoom in</span><span class="h-touch">Pinch or + to zoom · Drag to pan once zoomed · Tap a device or link for details</span></div>
+      </div>
+      <div class="legend" id="legend" aria-label="Legend. Select an item to highlight it.">
+        <span class="lg-title">Roles</span>
+        <button class="lg" data-role="cp" aria-pressed="false"><span class="sw cp"></span>CP + Border · C9500-24Y4C ×2</button>
+        <button class="lg" data-role="int" aria-pressed="false"><span class="sw int"></span>Intermediate · C9400 ×4</button>
+        <button class="lg" data-role="en" aria-pressed="false"><span class="sw en"></span>Edge · C9300 ×60</button>
+        <button class="lg" data-role="ext" aria-pressed="false"><span class="sw ext"></span>External · FUS-1 / FUS-2 (out of scope)</button>
+        <span class="sep" aria-hidden="true"></span>
+        <span class="lg-title">Links</span>
+        <button class="lg" data-cls="l100" aria-pressed="false"><svg width="30" height="10" aria-hidden="true"><line x1="3" y1="5" x2="27" y2="5" stroke="var(--l100)" stroke-width="5" stroke-linecap="round"/></svg>100G QSFP28 · fiber</button>
+        <button class="lg" data-cls="l25" aria-pressed="false"><svg width="30" height="10" aria-hidden="true"><line x1="3" y1="5" x2="27" y2="5" stroke="var(--l25)" stroke-width="3.2" stroke-linecap="round"/></svg>25G SFP28 · fiber</button>
+        <button class="lg" data-cls="l10" aria-pressed="false"><svg width="30" height="10" aria-hidden="true"><line x1="3" y1="5" x2="27" y2="5" stroke="var(--l10)" stroke-width="2.1" stroke-linecap="round"/></svg>10G SFP+ · fiber</button>
+        <button class="lg" data-cls="lb10" aria-pressed="false"><svg width="30" height="14" aria-hidden="true"><line x1="6" y1="7" x2="24" y2="7" stroke="var(--l10)" stroke-width="12" stroke-linecap="round" opacity=".22"/><line x1="3" y1="7" x2="27" y2="7" stroke="var(--l10)" stroke-width="2.1"/></svg>Bundle · 26 × 10G (not drawn individually)</button>
+        <button class="lg" data-cls="lcu" aria-pressed="false"><svg width="30" height="10" aria-hidden="true"><line x1="2" y1="5" x2="28" y2="5" stroke="var(--lcu)" stroke-width="2" stroke-dasharray="5 4"/></svg>1G RJ-45 · copper</button>
+        <button class="lg" data-cls="lho" aria-pressed="false"><svg width="30" height="10" aria-hidden="true"><line x1="3" y1="5" x2="27" y2="5" stroke="var(--lho)" stroke-width="2.6" stroke-dasharray=".5 5" stroke-linecap="round"/></svg>Border handoff (VRF-lite)</button>
+      </div>
+      <div class="canvas" id="canvas" tabindex="0" aria-label="Topology diagram. Plus and minus keys zoom, arrow keys pan, 0 fits the diagram.">
+        <svg id="topo" viewBox="0 0 1600 1120" preserveAspectRatio="xMidYMid meet" role="group" aria-label="SD-Access fabric topology: 2 C9500-24Y4C control-plane and border nodes, 4 C9400 intermediate nodes, 60 C9300 edge nodes, 2 external fusion devices"></svg>
+        <div class="canvas-hint" id="cHint" aria-hidden="true">Hold Ctrl or ⌘ while scrolling to zoom</div>
+      </div>
+      <div class="topo-foot">
+        <span><b>Fiber</b> is drawn as solid lines. Line color and width show the speed.</span>
+        <span><b>Copper</b> is drawn as dashed brown lines (RJ-45).</span>
+        <span><b>Port glyphs</b>: filled means in use, outline means spare.</span>
+        <span>Port positions are schematic, not to scale.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="links" class="section" aria-labelledby="h-links">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2 id="h-links">Interface &amp; link map</h2>
+      <p>These are the IOS XE interface names for the selected part numbers. In the link table, <b>Source</b> is the downstream device and its uplink port, and <b>Destination</b> is the upstream device and its downlink port. All switch-to-switch links are routed point-to-point /31 links running IS-IS, BFD and MTU 9100.<span class="ref"><a href="#src-12" title="Cisco Software-Defined Access Solution Design Guide (CVD)">[12]</a></span></p>
+    </div>
+    <h3 class="sub-h">Port inventory by part number</h3>
+    <div class="tbl-wrap"><table class="t">
+      <thead><tr><th>Part number</th><th>Interfaces</th><th>Port / transceiver</th><th>Medium</th><th>Supported speeds</th><th>Used in this design</th></tr></thead>
+      <tbody>
+        <tr><td><b>C9500-24Y4C</b><span class="ref"><a href="#src-1" title="Cisco Catalyst 9500 Series Switches Data Sheet">[1]</a></span><span class="ref"><a href="#src-3" title="Cisco Catalyst 9500 Series Switches Hardware Installation Guide: Product Overview">[3]</a></span></td><td class="mono">TwentyFiveGigE1/0/1–24</td><td>SFP28</td><td><span class="med f25"><i></i>Fiber</span></td><td>1 / 10 / 25 Gbps</td><td>1–2 CP/BN cross-link · 23 → FUS-1 · 24 → FUS-2 · 3–22 spare (20)</td></tr>
+        <tr><td><b>C9500-24Y4C</b></td><td class="mono">HundredGigE1/0/25–28</td><td>QSFP28</td><td><span class="med f100"><i></i>Fiber</span></td><td>40 / 100 Gbps</td><td>25 → INT-A1 · 26 → INT-A2 · 27 → INT-B1 · 28 → INT-B2</td></tr>
+        <tr><td><b>C9400X-SUP-2XL</b><span class="ref"><a href="#src-5" title="Cisco Catalyst 9400 Series Supervisor Engines Data Sheet">[5]</a></span><span class="ref"><a href="#src-7" title="Cisco Catalyst 9400 Series Supervisor Module Installation Note">[7]</a></span></td><td class="mono">TwentyFiveGigE2/0/1–4</td><td>SFP28 (supervisor)</td><td><span class="med f25"><i></i>Fiber</span></td><td>10 / 25 Gbps</td><td>1–4 spare (no intermediate cross-links)</td></tr>
+        <tr><td><b>C9400X-SUP-2XL</b></td><td class="mono">HundredGigE2/0/5–8</td><td>QSFP28 (supervisor)</td><td><span class="med f100"><i></i>Fiber</span></td><td>40 / 100 Gbps</td><td>6 → CP/BN-1 · 7 → CP/BN-2 · 5 and 8 spare (enabling port 5 disables ports 1–4)</td></tr>
+        <tr><td><b>C9400-LC-48XS</b><span class="ref"><a href="#src-6" title="Cisco Catalyst 9400 Series Line Cards Data Sheet">[6]</a></span></td><td class="mono">TenGigabitEthernet1/0/1–48</td><td>SFP+ or SFP</td><td><span class="med f10"><i></i>Fiber</span></td><td>1 / 10 Gbps (SFP and SFP+ can be mixed)</td><td>1–30 → edge nodes · 31–48 spare</td></tr>
+        <tr><td><b>C9300-48U</b><span class="ref"><a href="#src-9" title="Cisco Catalyst 9300 Series Switches Data Sheet">[9]</a></span></td><td class="mono">GigabitEthernet1/0/1–48</td><td>RJ-45 · 10/100/1000BASE-T · Cisco UPOE (60 W)</td><td><span class="med cu"><i></i>Copper</span></td><td>10 / 100 / 1000 Mbps</td><td>Endpoint access (APs, phones, PCs)</td></tr>
+        <tr><td><b>C9300-NM-8X</b><span class="ref"><a href="#src-9" title="Cisco Catalyst 9300 Series Switches Data Sheet">[9]</a></span></td><td class="mono">TenGigabitEthernet1/1/1–8</td><td>SFP+ or SFP</td><td><span class="med f10"><i></i>Fiber</span></td><td>1 / 10 Gbps</td><td>1 → INT-A1 / INT-B1 · 2 → INT-A2 / INT-B2 · 3–8 spare</td></tr>
+        <tr><td><b>All three platforms</b></td><td class="mono">GigabitEthernet0/0</td><td>RJ-45 management port</td><td><span class="med cu"><i></i>Copper</span></td><td>—</td><td>Out-of-band management (Mgmt-vrf)</td></tr>
+      </tbody>
+    </table></div>
+    <h3 class="sub-h">Physical links</h3>
+    <div class="tbl-wrap"><table class="t t-links" id="tblLinks"></table></div>
+    <details class="more"><summary>Show all 60 edge-node uplink mappings</summary><div class="inner"><div class="tbl-wrap"><table class="t" id="tblEN"></table></div></div></details>
+  </div>
+</section>
+
+<section id="capacity" class="section" aria-labelledby="h-cap">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2 id="h-cap">Throughput &amp; oversubscription</h2>
+      <p>Every link runs at line rate in full duplex, so each speed shown applies in each direction. ECMP balances traffic per flow, which means a single flow can't exceed one member link. VXLAN adds 50 bytes per packet (about 3% at 1,500-byte packets), so the MTU is 9100 end to end.<span class="ref"><a href="#src-12" title="Cisco Software-Defined Access Solution Design Guide (CVD)">[12]</a></span></p>
+    </div>
+    <div class="ladder" id="ladder"></div>
+    <div class="tbl-wrap"><table class="t">
+      <thead><tr><th>Device / tier</th><th>Downlink capacity</th><th>Uplink capacity</th><th>Cross-link</th><th>Oversubscription</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td><b>C9300-48U</b><span class="sub">each edge node</span></td><td>48 × 1G copper = <b>48 Gbps</b></td><td>2 × 10G SFP+ = <b>20 Gbps</b><span class="sub mono">Te1/1/1–2</span></td><td class="na">—</td><td class="num"><b>2.4 : 1</b></td><td>Te1/1/3–8 are spare. Losing one uplink leaves 10 Gbps.</td></tr>
+        <tr><td><b>C9400</b><span class="sub">each intermediate</span></td><td>30 × 10G = <b>300 Gbps</b><span class="sub">LC-48XS capacity: 48 × 10G = 480 Gbps, line rate (1:1) with SUP-2XL<span class="ref"><a href="#src-6" title="Cisco Catalyst 9400 Series Line Cards Data Sheet">[6]</a></span></span></td><td>2 × 100G = <b>200 Gbps</b><span class="sub mono">Hu2/0/6–7</span></td><td class="na">—</td><td class="num"><b>1.5 : 1</b></td><td>With a C9400X-SUP-2 the same line card is limited to 240 Gbps per slot (2:1).<span class="ref"><a href="#src-6" title="Cisco Catalyst 9400 Series Line Cards Data Sheet">[6]</a></span></td></tr>
+        <tr><td><b>Intermediate group</b><span class="sub">pair of C9400s</span></td><td>30 ENs × 20G = <b>600 Gbps</b></td><td>4 × 100G = <b>400 Gbps</b></td><td class="na">—</td><td class="num"><b>1.5 : 1</b></td><td>Each EN sends about half its flows to each intermediate (ECMP).</td></tr>
+        <tr><td><b>C9500-24Y4C</b><span class="sub">each CP/BN</span></td><td>4 × 100G = <b>400 Gbps</b><span class="sub">one link to every intermediate</span></td><td>2 × 25G = <b>50 Gbps</b>, one link to each fusion device<span class="sub mono">Twe1/0/23 → FUS-1 · Twe1/0/24 → FUS-2</span></td><td>2 × 25G = 50 Gbps</td><td class="num"><b>8 : 1</b><span class="sub">north–south</span></td><td>Traffic between Group A and Group B turns at the CP/BN at line rate. The handoff caps north–south traffic, and 20 spare SFP28 ports can add capacity there.</td></tr>
+        <tr><td><b>Whole fabric</b></td><td><b>2,880 Gbps</b> access</td><td><b>1,200 Gbps</b> EN uplinks → <b>800 Gbps</b> core</td><td class="na">—</td><td class="num"><b>3.6 : 1</b><span class="sub">access : core</span></td><td>2,880 × 1G ÷ 8 × 100G.</td></tr>
+        <tr><td><b>Per user</b><span class="sub">≈ 2,000 users</span></td><td>2,880 access ports ≈ 1.4 per user</td><td>100 Gbps north–south ≈ <b>50 Mbps per user</b> with every user active at once</td><td class="na">—</td><td class="num">—</td><td>With one border down, 50 Gbps ≈ 25 Mbps per user. East–west traffic inside the fabric doesn't use the handoff.</td></tr>
+      </tbody>
+    </table></div>
+    <p class="note">Platform forwarding capacity: C9500-24Y4C up to 2.0 Tbps switching and 1 Bpps<span class="ref"><a href="#src-1" title="Cisco Catalyst 9500 Series Switches Data Sheet">[1]</a></span>. C9400X-SUP-2XL up to 480 Gbps per slot and 3 Bpps<span class="ref"><a href="#src-5" title="Cisco Catalyst 9400 Series Supervisor Engines Data Sheet">[5]</a></span>. C9300-48U 256 Gbps switching and 190.48 Mpps<span class="ref"><a href="#src-9" title="Cisco Catalyst 9300 Series Switches Data Sheet">[9]</a></span>.</p>
+  </div>
+</section>
+
+<section id="tcam" class="section" aria-labelledby="h-tcam">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2 id="h-tcam">TCAM &amp; hardware resources</h2>
+      <p>Cisco publishes hardware scale as SDM (Switching Database Manager) template allocations for each ASIC. Each value is the maximum for one resource under the stated template. Templates trade one resource against another, and changing the template requires a reload. SD-Access scale figures come from the Catalyst Center 2.3.7 data sheet.<span class="ref"><a href="#src-11" title="Cisco Catalyst Center Data Sheet (SD-Access scale, release 2.3.7)">[11]</a></span></p>
+    </div>
+    <div class="tbl-wrap tbl-bleed"><table class="t t-tcam">
+      <thead><tr><th>Device</th><th>Role</th><th>TCAM / Resource</th><th>IPv4</th><th>IPv6</th><th>MAC</th><th>ACL / Security</th><th>SDA scale</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><b>C9500-24Y4C</b><span class="sub">CP/BN-1 · CP/BN-2</span></td>
+          <td><span class="chip-role cp">Control Plane</span><span class="sub">+ co-located anywhere border</span></td>
+          <td>UADP 3.0. FIB: 416,000 double-width entries; IPv4 and IPv6 at the same scale. ACL TCAM: 54,000 entries.<span class="ref"><a href="#src-2" title="Cisco Catalyst 9500 Series Switches Architecture White Paper">[2]</a></span> Templates: Distribution, Core (default), NAT, SD-Access, the same as on the C9500-32C, -32QC and -48Y4C. Custom SDM from IOS XE 17.3.1.<span class="ref"><a href="#src-1" title="Cisco Catalyst 9500 Series Switches Data Sheet">[1]</a></span></td>
+          <td>212K LPM + host (SD-Access template; 114K Distribution). Up to 256K routes with custom SDM. Host/ARP: 80K adjacencies (SVI) or 90K direct routes (routed ports).<span class="ref"><a href="#src-1" title="Cisco Catalyst 9500 Series Switches Data Sheet">[1]</a></span></td>
+          <td>Shares the same 212K IPv4/IPv6 pool (SD-Access template), at the same scale as IPv4.<span class="ref"><a href="#src-1" title="Cisco Catalyst 9500 Series Switches Data Sheet">[1]</a></span><span class="ref"><a href="#src-2" title="Cisco Catalyst 9500 Series Switches Architecture White Paper">[2]</a></span></td>
+          <td>32K (SD-Access, Core, NAT) · 82K (Distribution) · 32K–128K (custom)<span class="ref"><a href="#src-1" title="Cisco Catalyst 9500 Series Switches Data Sheet">[1]</a></span></td>
+          <td>Security ACL 27K · QoS ACL 16K (SD-Access template). SGT/MPLS labels 32K.<span class="ref"><a href="#src-1" title="Cisco Catalyst 9500 Series Switches Data Sheet">[1]</a></span></td>
+          <td>CP: <b>150,000 endpoints</b>. Border: 256 VNs · 48,000 IPv4 routes · 150,000 fabric host entries · 200,000 IPv4–SGT bindings · 16,000 SGT/DGT policies · 13,000 SG-ACEs (Catalyst 9500 High Performance, listed as “9500H”).<span class="ref"><a href="#src-11" title="Cisco Catalyst Center Data Sheet (SD-Access scale, release 2.3.7)">[11]</a></span></td>
+        </tr>
+        <tr>
+          <td><b>C9400X-SUP-2XL</b><span class="sub">in C9404R · INT-A1 … INT-B2</span></td>
+          <td><span class="chip-role int">Intermediate</span><span class="sub">underlay only</span></td>
+          <td>UADP 3.0sec on the supervisor performs all lookups for every line card. Only the Access standard template is available (IOS XE 17.7.1+). The custom SDM template (17.11.1+) splits 416K FIB + 52K ACL entries. No NAT template, and the SDA template isn't supported in software.<span class="ref"><a href="#src-5" title="Cisco Catalyst 9400 Series Supervisor Engines Data Sheet">[5]</a></span><span class="ref"><a href="#src-8" title="Catalyst 9400 System Management Configuration Guide, IOS XE 17.13.x: Configuring SDM Templates">[8]</a></span></td>
+          <td>Up to 256,000 (custom SDM).<span class="ref"><a href="#src-5" title="Cisco Catalyst 9400 Series Supervisor Engines Data Sheet">[5]</a></span> Access-template default: <span class="dep">Depends on supervisor / line card / hardware configuration</span></td>
+          <td>Up to 256,000 (custom SDM).<span class="ref"><a href="#src-5" title="Cisco Catalyst 9400 Series Supervisor Engines Data Sheet">[5]</a></span> Access-template default: <span class="dep">Depends on supervisor / line card / hardware configuration</span></td>
+          <td>Up to 128,000 (custom SDM)<span class="ref"><a href="#src-5" title="Cisco Catalyst 9400 Series Supervisor Engines Data Sheet">[5]</a></span></td>
+          <td>Security ACL up to 27,000 · QoS up to 27,000 hardware entries (custom SDM).<span class="ref"><a href="#src-5" title="Cisco Catalyst 9400 Series Supervisor Engines Data Sheet">[5]</a></span></td>
+          <td>Not applicable. Intermediate nodes need only IP reachability and MTU ≥ 1,550 (9,100 recommended). They run no LISP, VXLAN or SGT and don't count toward fabric-device limits.<span class="ref"><a href="#src-12" title="Cisco Software-Defined Access Solution Design Guide (CVD)">[12]</a></span></td>
+        </tr>
+        <tr>
+          <td><b>C9400-LC-48XS</b><span class="sub">+ C9404R chassis</span></td>
+          <td><span class="chip-role int">Intermediate</span></td>
+          <td>Neither the line card nor the chassis has forwarding TCAM. Line cards are functionally transparent, so all forwarding happens on the supervisor. 48 × 10G SFP+ / 1G SFP. Requires SUP-2/2XL and IOS XE 17.8+.<span class="ref"><a href="#src-6" title="Cisco Catalyst 9400 Series Line Cards Data Sheet">[6]</a></span></td>
+          <td class="na">Set by the supervisor</td><td class="na">Set by the supervisor</td><td class="na">Set by the supervisor</td><td class="na">Set by the supervisor</td><td class="na">—</td>
+        </tr>
+        <tr>
+          <td><b>C9300-48U</b><span class="sub">EN-1 … EN-60</span></td>
+          <td><span class="chip-role en">Edge Node</span></td>
+          <td>UADP 2.0. SDM templates: Access (default) and NAT. IPv4 and IPv6 share tables, and each IPv6 entry uses two entries.<span class="ref"><a href="#src-9" title="Cisco Catalyst 9300 Series Switches Data Sheet">[9]</a></span><span class="ref"><a href="#src-10" title="Catalyst 9300 System Management Configuration Guide, IOS XE 17.17.x: Configuring SDM Templates">[10]</a></span></td>
+          <td>32,000 routes (24,000 direct/host + 8,000 indirect)<span class="ref"><a href="#src-9" title="Cisco Catalyst 9300 Series Switches Data Sheet">[9]</a></span></td>
+          <td>16,000 (double-width entries)<span class="ref"><a href="#src-9" title="Cisco Catalyst 9300 Series Switches Data Sheet">[9]</a></span><span class="ref"><a href="#src-10" title="Catalyst 9300 System Management Configuration Guide, IOS XE 17.17.x: Configuring SDM Templates">[10]</a></span></td>
+          <td>32,000<span class="ref"><a href="#src-9" title="Cisco Catalyst 9300 Series Switches Data Sheet">[9]</a></span></td>
+          <td>Security ACL 5,120 · QoS ACL 5,120<span class="ref"><a href="#src-9" title="Cisco Catalyst 9300 Series Switches Data Sheet">[9]</a></span></td>
+          <td>Edge: <b>6,000 endpoints</b> · 256 VNs · 10,000 IPv4–SGT bindings · 8,000 SGT/DGT policies · 5,000 SG-ACEs · 200 APs / 4,000 wireless endpoints.<span class="ref"><a href="#src-11" title="Cisco Catalyst Center Data Sheet (SD-Access scale, release 2.3.7)">[11]</a></span></td>
+        </tr>
+        <tr>
+          <td><b>C9300-NM-8X</b><span class="sub">uplink module</span></td>
+          <td><span class="chip-role en">Edge Node</span></td>
+          <td>No TCAM. The host C9300's UADP 2.0 forwards these ports. 8 × 1/10G SFP+.<span class="ref"><a href="#src-9" title="Cisco Catalyst 9300 Series Switches Data Sheet">[9]</a></span></td>
+          <td class="na">Set by the host C9300</td><td class="na">Set by the host C9300</td><td class="na">Set by the host C9300</td><td class="na">Set by the host C9300</td><td class="na">—</td>
+        </tr>
+      </tbody>
+    </table></div>
+
+    <details class="more"><summary>C9500-24Y4C SDM template allocations (same on the C9500-32C, -32QC and -48Y4C)</summary><div class="inner">
+      <div class="tbl-wrap"><table class="t">
+        <thead><tr><th>Resource</th><th class="num">Distribution</th><th class="num">Core (default)</th><th class="num">NAT</th><th class="num">SD-Access</th></tr></thead>
+        <tbody>
+          <tr><td>IPv4 / IPv6 (LPM + host)</td><td class="num">114K</td><td class="num">212K</td><td class="num">212K</td><td class="num"><b>212K</b></td></tr>
+          <tr><td>Multicast routes</td><td class="num">16K</td><td class="num">32K</td><td class="num">32K</td><td class="num"><b>32K</b></td></tr>
+          <tr><td>IGMP / MLD snooping</td><td class="num">2K</td><td class="num">2K</td><td class="num">2K</td><td class="num"><b>2K</b></td></tr>
+          <tr><td>MAC addresses</td><td class="num">82K</td><td class="num">32K</td><td class="num">32K</td><td class="num"><b>32K</b></td></tr>
+          <tr><td>MPLS / SGT labels</td><td class="num">32K</td><td class="num">32K</td><td class="num">32K</td><td class="num"><b>32K</b></td></tr>
+          <tr><td>NetFlow (per ASIC)</td><td class="num">98K</td><td class="num">64K</td><td class="num">64K</td><td class="num"><b>64K</b></td></tr>
+          <tr><td>Security ACL</td><td class="num">27K</td><td class="num">27K</td><td class="num">20K</td><td class="num"><b>27K</b></td></tr>
+          <tr><td>QoS ACL</td><td class="num">16K</td><td class="num">16K</td><td class="num">8K</td><td class="num"><b>16K</b></td></tr>
+        </tbody>
+      </table></div>
+      <p class="note">Custom SDM (IOS XE 17.3.1+): MAC 32K–128K (default 32K) · IPv4/IPv6 routes 64K–256K (default 64K) · multicast 0–32K · IGMP/MLD 0–32K · SGT/MPLS 0–64K · NetFlow input 0–64K, output 0–64K · 416K FIB in total · Security ACL in/out 4K–26K or 27K in 2K steps (default 4K) · QoS ACL input 1K or 2K–16K.<span class="ref"><a href="#src-1" title="Cisco Catalyst 9500 Series Switches Data Sheet">[1]</a></span></p>
+    </div></details>
+
+    <details class="more"><summary>C9400 supervisors compared: the supervisor sets the numbers</summary><div class="inner">
+      <div class="tbl-wrap"><table class="t">
+        <thead><tr><th>Resource</th><th>C9400-SUP-1</th><th>C9400-SUP-1XL / -1XL-Y</th><th>C9400X-SUP-2</th><th>C9400X-SUP-2XL (this design)</th></tr></thead>
+        <tbody>
+          <tr><td>ASIC</td><td>UADP 2.0</td><td>UADP 2.0</td><td>UADP 3.0sec</td><td><b>UADP 3.0sec</b></td></tr>
+          <tr><td>Bandwidth per line-card slot</td><td>80 Gbps</td><td>240 (C9404R) / 120 / 80 Gbps</td><td>240 Gbps</td><td><b>480 Gbps</b></td></tr>
+          <tr><td>IPv4 routing entries</td><td>Up to 112,000 ³</td><td>Up to 144,000 ³</td><td>Up to 256,000 ²</td><td><b>Up to 256,000 ²</b></td></tr>
+          <tr><td>IPv6 routing entries</td><td>Up to 56,000</td><td>Up to 56,000 ¹</td><td>Up to 256,000 ²</td><td><b>Up to 256,000 ²</b></td></tr>
+          <tr><td>MAC addresses</td><td>64K (Access)</td><td>64K Access / 16K Core, SDA, NAT</td><td>Up to 128,000 ²</td><td><b>Up to 128,000 ²</b></td></tr>
+          <tr><td>Multicast routes</td><td>Up to 16,000</td><td>Up to 32,000 ¹</td><td>Up to 32,000 ²</td><td><b>Up to 32,000 ²</b></td></tr>
+          <tr><td>IGMP / MLD snooping</td><td>16,000 / 8,000</td><td>16,000 / 8,000 ¹</td><td>32,000 / 16,000 ²</td><td><b>32,000 / 16,000 ²</b></td></tr>
+          <tr><td>Security ACL hardware entries</td><td>Up to 18,000</td><td>Up to 18,000</td><td>Up to 27,000 ²</td><td><b>Up to 27,000 ²</b></td></tr>
+          <tr><td>QoS hardware entries</td><td>Up to 18,000</td><td>Up to 18,000</td><td>Up to 27,000 ²</td><td><b>Up to 27,000 ²</b></td></tr>
+          <tr><td>Packet buffer</td><td>96 MB</td><td>96 MB</td><td>108 MB</td><td><b>108 MB</b></td></tr>
+          <tr><td>Standard SDM templates</td><td>Access</td><td>Access · Core · SDA · NAT</td><td>Access + custom</td><td><b>Access + custom</b></td></tr>
+        </tbody>
+      </table></div>
+      <p class="note">¹ Depends on the SDM template · ² With the custom SDM template (IOS XE 17.11.1+) · ³ Host (/32) + LPM routes.<span class="ref"><a href="#src-5" title="Cisco Catalyst 9400 Series Supervisor Engines Data Sheet">[5]</a></span><span class="ref"><a href="#src-8" title="Catalyst 9400 System Management Configuration Guide, IOS XE 17.13.x: Configuring SDM Templates">[8]</a></span><span class="ref"><a href="#src-4" title="Cisco Catalyst 9400 Series Switches Data Sheet">[4]</a></span></p>
+    </div></details>
+
+    <details class="more"><summary>C9400X-SUP-2XL custom SDM template ranges</summary><div class="inner">
+      <ul class="small">
+        <li>416K FIB entries and 52K ACL entries in total, partitioned by the operator (IOS XE 17.11.1+).</li>
+        <li>Security ACL ingress/egress: 4,096 to 26,624 or 27,648 in 2,048 steps (default 4,096). QoS ACL: 1,024, or 2,048 to 16,384.</li>
+        <li>NetFlow ACL 1,024–2,048 · PBR/NAT 1,024–16,384 · LISP 1,024–2,048 (default 1,024) · Tunnels 1,024–3,072.</li>
+        <li>Layer 2 and Layer 3 multicast entries combined are capped at 48K.</li>
+        <li>A custom template isn't restored automatically after an RMA, so keep a copy of the configuration.</li>
+        <li>Per-resource values for the standard Access template on SUP-2/2XL: <span class="dep">Depends on supervisor / line card / hardware configuration</span>. Check them with <span class="mono">show sdm prefer</span>.<span class="ref"><a href="#src-8" title="Catalyst 9400 System Management Configuration Guide, IOS XE 17.13.x: Configuring SDM Templates">[8]</a></span></li>
+      </ul>
+    </div></details>
+  </div>
+</section>
+
+<section id="cp-resources" class="section" aria-labelledby="h-cp">
+  <div class="wrap">
+    <div class="highlight">
+      <span class="hl-tag">Control Plane nodes · CP/BN-1 / CP/BN-2 · C9500-24Y4C</span>
+      <h2 id="h-cp">Control-plane resources: what actually limits a CP node</h2>
+      <div class="callout"><b>Cisco publishes no single "Control Plane TCAM" figure.</b> Cisco sizes an SD-Access control-plane node by its <b>host tracking database (HTDB)</b> of LISP EID-to-RLOC bindings, its CPU and its memory.<span class="ref"><a href="#src-12" title="Cisco Software-Defined Access Solution Design Guide (CVD)">[12]</a></span> Catalyst Center rates CP capacity in endpoints: <b>150,000 for the Catalyst 9500 High Performance</b>, listed as “9500H”.<span class="ref"><a href="#src-11" title="Cisco Catalyst Center Data Sheet (SD-Access scale, release 2.3.7)">[11]</a></span> The Map-Server/Map-Resolver database lives in IOS XE software memory, not in TCAM. Hardware TCAM and FIB resources matter for traffic the node <i>forwards</i>, which here means the co-located border and the underlay core.</div>
+      <div class="res-grid">
+        <div class="res"><div class="r-k"><i>A</i>Hardware forwarding TCAM / tables</div><h3>UADP 3.0 forwarding tables</h3><p>These live in the ASIC and are partitioned by the SDM template.</p><ul>
+          <li>FIB: 416,000 double-width entries shared by IPv4 and IPv6, at the same scale for both<span class="ref"><a href="#src-2" title="Cisco Catalyst 9500 Series Switches Architecture White Paper">[2]</a></span></li>
+          <li>ACL TCAM: 54,000 entries in total<span class="ref"><a href="#src-2" title="Cisco Catalyst 9500 Series Switches Architecture White Paper">[2]</a></span></li>
+          <li>Templates: Distribution, Core (default), NAT, SD-Access. Custom SDM from IOS XE 17.3.1.<span class="ref"><a href="#src-1" title="Cisco Catalyst 9500 Series Switches Data Sheet">[1]</a></span></li>
+          <li>IP/mask programming is hash-based, so usable capacity depends on the prefix mix<span class="ref"><a href="#src-1" title="Cisco Catalyst 9500 Series Switches Data Sheet">[1]</a></span></li>
+          <li>Used for border VXLAN encap/decap, LISP map-cache entries merged into CEF, and underlay forwarding<span class="ref"><a href="#src-12" title="Cisco Software-Defined Access Solution Design Guide (CVD)">[12]</a></span></li></ul></div>
+        <div class="res"><div class="r-k"><i>B</i>Routing / host resources</div><h3>LPM, host, adjacency and MAC</h3><p>These are allocations within the FIB as published per SDM template.</p><ul>
+          <li>IPv4/IPv6 LPM + host: 212K (SD-Access template). Up to 256K routes with custom SDM.<span class="ref"><a href="#src-1" title="Cisco Catalyst 9500 Series Switches Data Sheet">[1]</a></span></li>
+          <li>Host/ARP: 80,000 adjacencies on SVIs (Distribution template), or 90,000 direct routes on routed ports (all templates)<span class="ref"><a href="#src-1" title="Cisco Catalyst 9500 Series Switches Data Sheet">[1]</a></span></li>
+          <li>MAC: 32K (SD-Access) · 82K (Distribution) · multicast routes 32K<span class="ref"><a href="#src-1" title="Cisco Catalyst 9500 Series Switches Data Sheet">[1]</a></span></li>
+          <li>Border scale: 48,000 IPv4 routes · 150,000 fabric host entries (/32 or /128, with every address counted)<span class="ref"><a href="#src-11" title="Cisco Catalyst Center Data Sheet (SD-Access scale, release 2.3.7)">[11]</a></span></li></ul></div>
+        <div class="res"><div class="r-k"><i>C</i>ACL / security resources</div><h3>Security ACL, QoS ACL, SGT</h3><p>These are TCAM-backed classification entries.</p><ul>
+          <li>Security ACL 27K · QoS ACL 16K (SD-Access template)<span class="ref"><a href="#src-1" title="Cisco Catalyst 9500 Series Switches Data Sheet">[1]</a></span></li>
+          <li>MPLS/SGT labels: 32K<span class="ref"><a href="#src-1" title="Cisco Catalyst 9500 Series Switches Data Sheet">[1]</a></span></li>
+          <li>Border scale: 200,000 IPv4–SGT bindings · 16,000 SGT/DGT policies · 13,000 SG-ACEs<span class="ref"><a href="#src-11" title="Cisco Catalyst Center Data Sheet (SD-Access scale, release 2.3.7)">[11]</a></span></li>
+          <li>Group-based policy (SGACL) uses security ACL TCAM wherever it's enforced, which is normally the egress edge</li></ul></div>
+        <div class="res"><div class="r-k"><i>D</i>Software / control-plane resources</div><h3>IOS XE on x86: where LISP lives</h3><p>These scale with CPU and memory, not with TCAM.</p><ul>
+          <li>x86 2.4 GHz 4-core CPU · 16 GB DDR4 · 16 GB flash<span class="ref"><a href="#src-1" title="Cisco Catalyst 9500 Series Switches Data Sheet">[1]</a></span><span class="ref"><a href="#src-2" title="Cisco Catalyst 9500 Series Switches Architecture White Paper">[2]</a></span></li>
+          <li>LISP Map-Server/Map-Resolver (HTDB), LISP Pub/Sub or LISP/BGP, IS-IS, BGP to the fusion, and CTS all run as IOS XE processes</li>
+          <li>CP scale: 150,000 endpoints, against about 6,000–8,000 for this site<span class="ref"><a href="#src-11" title="Cisco Catalyst Center Data Sheet (SD-Access scale, release 2.3.7)">[11]</a></span></li>
+          <li>Two CPs of the same model run active/active, and borders and edges register with both.<span class="ref"><a href="#src-12" title="Cisco Software-Defined Access Solution Design Guide (CVD)">[12]</a></span></li>
+          <li>With frequent wireless roaming, a co-located CP/BN can hit high CPU, and the CVD recommends dedicated CPs in that case.<span class="ref"><a href="#src-12" title="Cisco Software-Defined Access Solution Design Guide (CVD)">[12]</a></span></li></ul></div>
+      </div>
+
+      <h3 class="sub-h">Which resource each SD-Access function uses on CP/BN-1 / CP/BN-2</h3>
+      <div class="tbl-wrap"><table class="t">
+        <thead><tr><th>Function</th><th>Resource class</th><th>What it consumes (Cisco terminology)</th><th>C9500-24Y4C value</th><th>Verify with</th></tr></thead>
+        <tbody>
+          <tr><td><b>LISP control plane</b><span class="sub">Map-Server / Map-Resolver</span></td><td>D · Software</td><td>HTDB of EID-to-RLOC registrations in IOS XE memory, plus LISP sessions to every edge and border</td><td>150,000 endpoints<span class="ref"><a href="#src-11" title="Cisco Catalyst Center Data Sheet (SD-Access scale, release 2.3.7)">[11]</a></span></td><td class="mono">show lisp site summary<br>show lisp session</td></tr>
+          <tr><td><b>VXLAN</b></td><td>A · Hardware forwarding</td><td>Border encap/decap in the UADP pipeline. The VXLAN-GPO header carries the SGT and adds 50 B per packet.<span class="ref"><a href="#src-12" title="Cisco Software-Defined Access Solution Design Guide (CVD)">[12]</a></span></td><td><span class="dep">Depends on supervisor / line card / hardware configuration</span><span class="sub">No separate VXLAN entry count is published for this model</span></td><td class="mono">show platform hardware fed active fwd-asic resource tcam utilization</td></tr>
+          <tr><td><b>SDA fabric forwarding</b><span class="sub">border role</span></td><td>A + B</td><td>Map-cache entries merged into CEF and installed in hardware<span class="ref"><a href="#src-12" title="Cisco Software-Defined Access Solution Design Guide (CVD)">[12]</a></span>, plus external routes imported into each VN</td><td>150,000 fabric host entries · 48,000 IPv4 routes<span class="ref"><a href="#src-11" title="Cisco Catalyst Center Data Sheet (SD-Access scale, release 2.3.7)">[11]</a></span></td><td class="mono">show lisp instance-id &lt;IID&gt; ipv4 map-cache<br>show ip cef vrf &lt;VN&gt; summary</td></tr>
+          <tr><td><b>Routing</b></td><td>B · Routing</td><td>Global table with loopbacks and /31 P2P links (IS-IS), plus VRF tables for VN and external routes</td><td>212K LPM + host (SD-Access) · 256K routes (custom)<span class="ref"><a href="#src-1" title="Cisco Catalyst 9500 Series Switches Data Sheet">[1]</a></span></td><td class="mono">show ip route summary<br>show isis neighbors</td></tr>
+          <tr><td><b>IPv4</b></td><td>B</td><td>Shared FIB (double-width entries)</td><td>212K (SD-Access template)<span class="ref"><a href="#src-1" title="Cisco Catalyst 9500 Series Switches Data Sheet">[1]</a></span></td><td class="mono">show sdm prefer</td></tr>
+          <tr><td><b>IPv6</b></td><td>B</td><td>Same shared FIB, at IPv4 scale on UADP 3.0</td><td>Shared 212K pool<span class="ref"><a href="#src-1" title="Cisco Catalyst 9500 Series Switches Data Sheet">[1]</a></span><span class="ref"><a href="#src-2" title="Cisco Catalyst 9500 Series Switches Architecture White Paper">[2]</a></span></td><td class="mono">show sdm prefer</td></tr>
+          <tr><td><b>Host / MAC entries</b></td><td>B</td><td>/32 and /128 host routes, ARP/ND adjacencies and the MAC table (small on a routed CP/BN)</td><td>Host/ARP 80K (SVI) · 90K (routed ports) · MAC 32K<span class="ref"><a href="#src-1" title="Cisco Catalyst 9500 Series Switches Data Sheet">[1]</a></span></td><td class="mono">show ip arp summary<br>show mac address-table count</td></tr>
+          <tr><td><b>ACL / security</b></td><td>C · ACL/security TCAM</td><td>Security and QoS ACL TCAM, IP–SGT bindings and the SGT/DGT policy matrix</td><td>Security ACL 27K · QoS ACL 16K · SGT 32K<span class="ref"><a href="#src-1" title="Cisco Catalyst 9500 Series Switches Data Sheet">[1]</a></span>; 200,000 IP–SGT bindings · 16,000 policies · 13,000 SG-ACEs<span class="ref"><a href="#src-11" title="Cisco Catalyst Center Data Sheet (SD-Access scale, release 2.3.7)">[11]</a></span></td><td class="mono">show cts role-based permissions<br>show cts role-based sgt-map all</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3 class="sub-h">This design against the limits (estimates)</h3>
+      <div class="tbl-wrap"><table class="t">
+        <thead><tr><th>Item</th><th>This design</th><th>Documented limit</th><th class="num">Approx. use</th></tr></thead>
+        <tbody>
+          <tr><td>Fabric devices in the site</td><td>62 (60 EN + 2 CP/BN; intermediates not counted<span class="ref"><a href="#src-12" title="Cisco Software-Defined Access Solution Design Guide (CVD)">[12]</a></span>)</td><td>500–1,200 per site, depending on the Catalyst Center appliance<span class="ref"><a href="#src-11" title="Cisco Catalyst Center Data Sheet (SD-Access scale, release 2.3.7)">[11]</a></span></td><td class="num">≤ 12.4%</td></tr>
+          <tr><td>Endpoints on each CP</td><td>≈ 6,000–8,000 for 2,000 users (3–4 devices each: PC, IP phone and wireless devices, plus APs, printers and IoT). Each IPv4 and IPv6 address counts separately.</td><td>150,000 (Catalyst 9500 High Performance)<span class="ref"><a href="#src-11" title="Cisco Catalyst Center Data Sheet (SD-Access scale, release 2.3.7)">[11]</a></span></td><td class="num">≈ 5% (≈ 11% dual-stack)</td></tr>
+          <tr><td>Endpoints per edge (C9300)</td><td>≈ 33 users per edge on average, about 100–130 endpoints including wireless clients on attached APs</td><td>6,000<span class="ref"><a href="#src-11" title="Cisco Catalyst Center Data Sheet (SD-Access scale, release 2.3.7)">[11]</a></span></td><td class="num">≈ 2%</td></tr>
+          <tr><td>Underlay prefixes</td><td>≈ 200 (66 loopbacks + 130 P2P /31s)</td><td>212K (SD-Access template)<span class="ref"><a href="#src-1" title="Cisco Catalyst 9500 Series Switches Data Sheet">[1]</a></span></td><td class="num">&lt; 0.1%</td></tr>
+          <tr><td>Fabric host entries on each border</td><td>≈ 6,000–8,000 (the same endpoints)</td><td>150,000<span class="ref"><a href="#src-11" title="Cisco Catalyst Center Data Sheet (SD-Access scale, release 2.3.7)">[11]</a></span></td><td class="num">≈ 5%</td></tr>
+        </tbody>
+      </table></div>
+      <p class="note">Endpoint numbers are planning estimates. Replace them with real counts, including wireless and dual-stack addresses, during design validation.</p>
+
+      <h3 class="sub-h" id="cp-placement">CP placement for 2,000 users: co-located vs dedicated</h3>
+      <div class="tbl-wrap"><table class="t">
+        <thead><tr><th>Option</th><th>CP scale (Catalyst Center 2.3.7)</th><th>Lifecycle</th><th>Links to the borders</th><th>Extra hardware</th><th>Verdict</th></tr></thead>
+        <tbody>
+          <tr><td><b>Co-located on 2 × C9500-24Y4C</b><span class="sub">this design</span></td><td>150,000 endpoints (“9500H”)<span class="ref"><a href="#src-11" title="Cisco Catalyst Center Data Sheet (SD-Access scale, release 2.3.7)">[11]</a></span></td><td>Current model</td><td>None. CP and border share the switch.</td><td>None</td><td><b>Recommended.</b> Cisco calls co-location the common deployment, and about 8,000 endpoints is roughly 5% of the scale.<span class="ref"><a href="#src-12" title="Cisco Software-Defined Access Solution Design Guide (CVD)">[12]</a></span></td></tr>
+          <tr><td><b>Dedicated 2 × C9500-12Q</b></td><td>80,000 endpoints (“9500”)<span class="ref"><a href="#src-11" title="Cisco Catalyst Center Data Sheet (SD-Access scale, release 2.3.7)">[11]</a></span></td><td>End-of-sale 30 Apr 2024 · software maintenance ended 30 Apr 2025 · last release IOS XE 17.18 · support ends 30 Apr 2029<span class="ref"><a href="#src-15" title="End-of-Sale and End-of-Life Announcement for the Cisco C9500-12Q, C9500-24Q and C9500-40X">[15]</a></span></td><td>12 × 40G QSFP+ only, so no 25G. Links from the borders' SFP28 ports would run at 10G at most, through an adapter or breakout.<span class="ref"><a href="#src-14" title="Cisco Transceiver Module Group (TMG) Compatibility Matrix">[14]</a></span></td><td>2 switches, 4 links, 8 optics, 2 licences</td><td><b>Not recommended.</b> New IOS XE releases and fixes stop at 17.18 for the CPs that every edge and border depends on, and support ends within the design's life. Cisco's replacement is the C9500-32QC.<span class="ref"><a href="#src-15" title="End-of-Sale and End-of-Life Announcement for the Cisco C9500-12Q, C9500-24Q and C9500-40X">[15]</a></span></td></tr>
+          <tr><td><b>Dedicated 2 × current model</b><span class="sub">e.g. another C9500-24Y4C pair</span></td><td>150,000 endpoints<span class="ref"><a href="#src-11" title="Cisco Catalyst Center Data Sheet (SD-Access scale, release 2.3.7)">[11]</a></span></td><td>Current model</td><td>2 × 10/25G per border, on two of the 20 spare SFP28 ports</td><td>2 switches, 4 links, 8 optics, 2 licences</td><td>Only if needed: heavy wireless roaming that loads the CP CPU, or a policy that separates CP and border.<span class="ref"><a href="#src-12" title="Cisco Software-Defined Access Solution Design Guide (CVD)">[12]</a></span></td></tr>
+        </tbody>
+      </table></div>
+      <p class="note">Use two CPs of the same model either way, and keep fabric sites with wireless to two CPs.<span class="ref"><a href="#src-12" title="Cisco Software-Defined Access Solution Design Guide (CVD)">[12]</a></span></p>
+
+      <h3 class="sub-h">Verify on the switch</h3>
+<pre class="cmd"><span class="c">! SDM template in use and its allocations</span>
+show sdm prefer
+<span class="c">! Hardware TCAM / FIB utilisation per ASIC</span>
+show platform hardware fed active fwd-asic resource tcam utilization
+<span class="c">! LISP control plane (HTDB) and sessions</span>
+show lisp site summary
+show lisp session
+<span class="c">! IOS XE control-plane CPU and memory</span>
+show platform software status control-processor brief
+show processes cpu sorted</pre>
+    </div>
+  </div>
+</section>
+
+<section id="bom" class="section" aria-labelledby="h-bom">
+  <div class="wrap">
+    <div class="sec-head"><h2 id="h-bom">Bill of materials</h2><p>These are the hardware quantities implied by the topology. The optics are examples only: choose SR (multimode) or LR (single-mode) to match the cable plant, and check every pairing in the Cisco TMG compatibility matrix.<span class="ref"><a href="#src-14" title="Cisco Transceiver Module Group (TMG) Compatibility Matrix">[14]</a></span></p></div>
+    <div class="tbl-wrap"><table class="t">
+      <thead><tr><th class="num">Qty</th><th>Part number</th><th>Description</th><th>Placement</th></tr></thead>
+      <tbody>
+        <tr><td class="num"><b>2</b></td><td><b>C9500-24Y4C</b> <span class="muted">(-A / -E)</span></td><td>Catalyst 9500 High Performance · 24 × 1/10/25G SFP28 + 4 × 40/100G QSFP28 · 2 PSU slots<span class="ref"><a href="#src-1" title="Cisco Catalyst 9500 Series Switches Data Sheet">[1]</a></span><span class="ref"><a href="#src-3" title="Cisco Catalyst 9500 Series Switches Hardware Installation Guide: Product Overview">[3]</a></span></td><td>CP/BN-1, CP/BN-2 (co-located CP + anywhere border)</td></tr>
+        <tr><td class="num"><b>4</b></td><td><b>C9404R</b></td><td>Catalyst 9400 4-slot chassis · line-card slots 1 and 4 · supervisor slots 2 and 3<span class="ref"><a href="#src-4" title="Cisco Catalyst 9400 Series Switches Data Sheet">[4]</a></span><span class="ref"><a href="#src-7" title="Cisco Catalyst 9400 Series Supervisor Module Installation Note">[7]</a></span></td><td>INT-A1 … INT-B2</td></tr>
+        <tr><td class="num"><b>4</b></td><td><b>C9400X-SUP-2XL</b></td><td>Supervisor · UADP 3.0sec · 480 Gbps per slot · 4 × SFP28 + 4 × QSFP28<span class="ref"><a href="#src-5" title="Cisco Catalyst 9400 Series Supervisor Engines Data Sheet">[5]</a></span></td><td>Slot 2</td></tr>
+        <tr><td class="num"><b>4</b></td><td><b>C9400-LC-48XS</b></td><td>48 × 10G SFP+ / 1G SFP fiber line card (requires SUP-2/2XL and IOS XE 17.8+)<span class="ref"><a href="#src-6" title="Cisco Catalyst 9400 Series Line Cards Data Sheet">[6]</a></span></td><td>Slot 1</td></tr>
+        <tr><td class="num"><b>60</b></td><td><b>C9300-48U</b> <span class="muted">(-A / -E)</span></td><td>Catalyst 9300 · 48 × 10/100/1000 Cisco UPOE<span class="ref"><a href="#src-9" title="Cisco Catalyst 9300 Series Switches Data Sheet">[9]</a></span></td><td>EN-1 … EN-60</td></tr>
+        <tr><td class="num"><b>60</b></td><td><b>C9300-NM-8X</b></td><td>8 × 1/10G SFP+ network module<span class="ref"><a href="#src-9" title="Cisco Catalyst 9300 Series Switches Data Sheet">[9]</a></span></td><td>Uplink slot of each C9300</td></tr>
+        <tr><td class="num"><b>16</b></td><td>QSFP28 100G, e.g. <span class="mono">QSFP-100G-SR4-S</span> / <span class="mono">QSFP-100G-LR4-S</span></td><td>8 CP/BN ↔ intermediate links × 2 ends</td><td>Hu1/0/25–28 · Hu2/0/6–7</td></tr>
+        <tr><td class="num"><b>4</b></td><td>SFP28 25G, e.g. <span class="mono">SFP-25G-SR-S</span> / <span class="mono">SFP-10/25G-LR-S</span></td><td>2 CP/BN ↔ CP/BN cross-links × 2 ends (no intermediate cross-links)</td><td>Twe1/0/1–2</td></tr>
+        <tr><td class="num"><b>4</b></td><td>SFP28 25G (fabric side of the handoff)</td><td>4 border ↔ fusion links, each border to FUS-1 and FUS-2. Fusion-side optics depend on that platform.</td><td>Twe1/0/23–24</td></tr>
+        <tr><td class="num"><b>240</b></td><td>SFP+ 10G, e.g. <span class="mono">SFP-10G-SR-S</span> / <span class="mono">SFP-10G-LR-S</span></td><td>120 edge ↔ intermediate links × 2 ends</td><td>Te1/0/1–30 · Te1/1/1–2</td></tr>
+        <tr><td class="num">opt. 4</td><td>C9400X-SUP-2XL</td><td>Redundant supervisor for SSO</td><td>Slot 3</td></tr>
+        <tr><td class="num">0</td><td>Dedicated CP switches</td><td>Not needed: the control plane runs on the two C9500-24Y4C borders. If dedicated CPs are ever required, use a current model, not the end-of-sale C9500-12Q.<span class="ref"><a href="#src-15" title="End-of-Sale and End-of-Life Announcement for the Cisco C9500-12Q, C9500-24Q and C9500-40X">[15]</a></span></td><td>—</td></tr>
+        <tr><td class="num">—</td><td colspan="3">Power supplies, licences and rack kits aren't specified here. Size them with the Cisco ordering guides and power calculator.</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+
+<section id="notes" class="section" aria-labelledby="h-notes">
+  <div class="wrap">
+    <div class="sec-head"><h2 id="h-notes">Hardware &amp; design notes</h2></div>
+    <div class="notes">
+      <div class="note-card"><h3><span class="n">01</span>Why C9500-24Y4C as co-located CP + anywhere border</h3><ul>
+        <li>About 2,000 users means roughly 6,000–8,000 endpoints. Catalyst Center rates the Catalyst 9500 High Performance at 150,000 CP endpoints, 150,000 border host entries and 48,000 IPv4 routes, so the pair runs at about 5% of its CP scale.<span class="ref"><a href="#src-11" title="Cisco Catalyst Center Data Sheet (SD-Access scale, release 2.3.7)">[11]</a></span></li>
+        <li>Cisco says a co-located CP is the most common deployment, and recommends dedicated CPs mainly where frequent wireless roaming drives CP CPU load. Neither applies to a 2,000-user headquarters.<span class="ref"><a href="#src-12" title="Cisco Software-Defined Access Solution Design Guide (CVD)">[12]</a></span></li>
+        <li>Two switches do three jobs: CP, anywhere border (internal + external, handing every VN to FUS-1 and FUS-2) and underlay core. That's two fewer switches, four fewer links and two fewer licences than dedicated CPs.</li>
+        <li>The 4 × 40/100G QSFP28 ports give exactly one 100G downlink to each intermediate. The 24 SFP28 ports cover the cross-link (1–2) and the handoffs (23–24), with 20 left for a WLC, extra handoffs or dedicated CPs later. All four QSFP28 ports are used, so more intermediates would need 25G downlinks or a C9500-48Y4C / C9500X-28C8D.<span class="ref"><a href="#src-1" title="Cisco Catalyst 9500 Series Switches Data Sheet">[1]</a></span><span class="ref"><a href="#src-3" title="Cisco Catalyst 9500 Series Switches Hardware Installation Guide: Product Overview">[3]</a></span></li>
+        <li>It has the same UADP 3.0 tables and SDM templates as the C9500-48Y4C. Its 2.0 Tbps and 1 Bpps are well above the 500 Gbps of ports in use.<span class="ref"><a href="#src-1" title="Cisco Catalyst 9500 Series Switches Data Sheet">[1]</a></span><span class="ref"><a href="#src-2" title="Cisco Catalyst 9500 Series Switches Architecture White Paper">[2]</a></span></li></ul></div>
+      <div class="note-card"><h3><span class="n">02</span>Why not dedicated C9500-12Q control-plane nodes</h3><ul>
+        <li>The C9500-12Q is end-of-sale (last order 30 April 2024). Software maintenance ended on 30 April 2025, IOS XE 17.18 is its last release, and support ends on 30 April 2029. Cisco's replacement is the C9500-32QC.<span class="ref"><a href="#src-15" title="End-of-Sale and End-of-Life Announcement for the Cisco C9500-12Q, C9500-24Q and C9500-40X">[15]</a></span></li>
+        <li>Its 12 ports are 40G QSFP+ only, so it can't run 25G. Links from the borders' SFP28 ports would run at 10G at most.<span class="ref"><a href="#src-14" title="Cisco Transceiver Module Group (TMG) Compatibility Matrix">[14]</a></span></li>
+        <li>New SD-Access features and fixes after 17.18 wouldn't reach the CPs that every edge and border depends on. The pair would also add two switches and four links without adding capacity this site needs.</li>
+        <li>If dedicated CPs are ever needed, use two of the same current model, for example another C9500-24Y4C pair on two spare SFP28 ports per border.<span class="ref"><a href="#src-12" title="Cisco Software-Defined Access Solution Design Guide (CVD)">[12]</a></span></li></ul></div>
+      <div class="note-card"><h3><span class="n">03</span>Why C9400 (C9404R + SUP-2XL + LC-48XS) as Intermediate</h3><ul>
+        <li>Intermediate nodes only route the underlay. They need IP reachability and MTU, not LISP, VXLAN or SGT support, so the choice comes down to port density and bandwidth.<span class="ref"><a href="#src-12" title="Cisco Software-Defined Access Solution Design Guide (CVD)">[12]</a></span></li>
+        <li>The C9400-LC-48XS provides 48 × 1/10G SFP+ fiber ports: 30 for edge nodes and 18 spare. With SUP-2XL each slot gets 480 Gbps (1:1). With SUP-2 it would get 240 Gbps (2:1).<span class="ref"><a href="#src-6" title="Cisco Catalyst 9400 Series Line Cards Data Sheet">[6]</a></span></li>
+        <li>The SUP-2XL provides the QSFP28 100G uplinks, 3 Bpps of forwarding and a 108 MB buffer. Its 4 × SFP28 ports stay spare: there are no intermediate cross-links, because each intermediate already has two 100G paths to the CP/BN pair and every edge is dual-homed.<span class="ref"><a href="#src-5" title="Cisco Catalyst 9400 Series Supervisor Engines Data Sheet">[5]</a></span></li>
+        <li>The C9404R is the smallest chassis. Slots 1 and 4 take line cards and slots 2 and 3 take supervisors, which leaves room for a growth line card and a redundant SUP-2XL.<span class="ref"><a href="#src-4" title="Cisco Catalyst 9400 Series Switches Data Sheet">[4]</a></span><span class="ref"><a href="#src-7" title="Cisco Catalyst 9400 Series Supervisor Module Installation Note">[7]</a></span></li>
+        <li>On the SUP-2XL, enabling port 5 disables ports 1–4. This design uses Hu2/0/6–7 and leaves port 5 unused.<span class="ref"><a href="#src-7" title="Cisco Catalyst 9400 Series Supervisor Module Installation Note">[7]</a></span></li></ul></div>
+      <div class="note-card"><h3><span class="n">04</span>Why C9300 (C9300-48U + NM-8X) as Edge</h3><ul>
+        <li>Catalyst Center edge scale for the 9300 is 6,000 endpoints, 256 VNs, 8,000 SGT/DGT policies, 5,000 SG-ACEs, and 200 APs with 4,000 wireless endpoints. That's ample for a 48-port access switch.<span class="ref"><a href="#src-11" title="Cisco Catalyst Center Data Sheet (SD-Access scale, release 2.3.7)">[11]</a></span></li>
+        <li>48 × Cisco UPOE (60 W) copper ports serve APs, phones and PCs. The NM-8X adds 8 × 1/10G SFP+ ports: 2 used as uplinks and 6 spare.<span class="ref"><a href="#src-9" title="Cisco Catalyst 9300 Series Switches Data Sheet">[9]</a></span></li>
+        <li>UADP 2.0, 256 Gbps switching and 190.48 Mpps, with an x86 CPU and 8 GB DRAM.<span class="ref"><a href="#src-9" title="Cisco Catalyst 9300 Series Switches Data Sheet">[9]</a></span></li>
+        <li>The switches are standalone here. A StackWise-480 stack added later counts as one fabric device.<span class="ref"><a href="#src-9" title="Cisco Catalyst 9300 Series Switches Data Sheet">[9]</a></span><span class="ref"><a href="#src-11" title="Cisco Catalyst Center Data Sheet (SD-Access scale, release 2.3.7)">[11]</a></span></li></ul></div>
+      <div class="note-card"><h3><span class="n">05</span>Copper vs fiber interfaces</h3><ul>
+        <li><b>Copper (RJ-45):</b> Gi1/0/1–48 on every C9300-48U (2,880 ports, 10/100/1000BASE-T, UPOE), and Gi0/0 out-of-band management on every device.</li>
+        <li><b>Fiber (pluggable optics):</b> every switch-to-switch link. That's QSFP28 100G for CP/BN ↔ intermediate, SFP28 25G for CP/BN ↔ CP/BN and border ↔ fusion, and SFP+ 10G for intermediate ↔ edge.</li>
+        <li>Choose SR multimode or LR single-mode optics by distance and cable plant. Short in-rack cross-links can use Cisco direct-attach cables where TMG lists them.<span class="ref"><a href="#src-14" title="Cisco Transceiver Module Group (TMG) Compatibility Matrix">[14]</a></span></li></ul></div>
+      <div class="note-card"><h3><span class="n">06</span>Uplink speeds</h3><ul>
+        <li>Edge → intermediate: 2 × 10G (Te1/1/1–2) = 20 Gbps per edge node, 1.2 Tbps across all 60.</li>
+        <li>Intermediate → CP/BN: 2 × 100G (Hu2/0/6–7) = 200 Gbps per intermediate, 800 Gbps in total.</li>
+        <li>CP/BN → fusion: 2 × 25G (Twe1/0/23 → FUS-1, Twe1/0/24 → FUS-2) = 50 Gbps per border and 100 Gbps in total, about 50 Mbps per user with all 2,000 active. 25G is an assumption, since the SFP28 ports also run at 1 or 10G to match the fusion device.</li></ul></div>
+      <div class="note-card"><h3><span class="n">07</span>Downlink speeds</h3><ul>
+        <li>CP/BN → intermediate: 4 × 100G (Hu1/0/25–28) = 400 Gbps per CP/BN.</li>
+        <li>Intermediate → edge: 30 × 10G = 300 Gbps per intermediate, out of 480 Gbps line-card capacity.</li>
+        <li>Edge → endpoints: 48 × 1G copper = 48 Gbps per edge node. UPOE delivers up to 60 W per port, within the PSU budget.</li></ul></div>
+      <div class="note-card"><h3><span class="n">08</span>TCAM architecture</h3><ul>
+        <li>UADP ASICs keep forwarding tables (FIB/LPM, host, adjacency, MAC) in hash-based memory and use TCAM for ACL, QoS and SGACL classification. The SDM template decides how both are partitioned.<span class="ref"><a href="#src-1" title="Cisco Catalyst 9500 Series Switches Data Sheet">[1]</a></span><span class="ref"><a href="#src-2" title="Cisco Catalyst 9500 Series Switches Architecture White Paper">[2]</a></span></li>
+        <li>C9500-24Y4C: UADP 3.0 with a 416K double-width FIB (IPv4 and IPv6 at the same scale) and 54K ACL TCAM.<span class="ref"><a href="#src-2" title="Cisco Catalyst 9500 Series Switches Architecture White Paper">[2]</a></span></li>
+        <li>C9400X-SUP-2XL: UADP 3.0sec. The custom template splits 416K FIB + 52K ACL, and line cards have no TCAM of their own.<span class="ref"><a href="#src-8" title="Catalyst 9400 System Management Configuration Guide, IOS XE 17.13.x: Configuring SDM Templates">[8]</a></span><span class="ref"><a href="#src-6" title="Cisco Catalyst 9400 Series Line Cards Data Sheet">[6]</a></span></li>
+        <li>C9300-48U: UADP 2.0, where each IPv6 entry uses two entries.<span class="ref"><a href="#src-10" title="Catalyst 9300 System Management Configuration Guide, IOS XE 17.17.x: Configuring SDM Templates">[10]</a></span></li></ul></div>
+      <div class="note-card"><h3><span class="n">09</span>TCAM limitations</h3><ul>
+        <li>Template changes need a reload, and every gain in one resource costs another. On the SUP-2XL a custom template isn't restored automatically after an RMA.<span class="ref"><a href="#src-8" title="Catalyst 9400 System Management Configuration Guide, IOS XE 17.13.x: Configuring SDM Templates">[8]</a></span></li>
+        <li>FIB programming is hash-based, so real capacity depends on the prefix mix.<span class="ref"><a href="#src-1" title="Cisco Catalyst 9500 Series Switches Data Sheet">[1]</a></span></li>
+        <li>IPv6 halves route capacity on the C9300 (UADP 2.0).<span class="ref"><a href="#src-10" title="Catalyst 9300 System Management Configuration Guide, IOS XE 17.17.x: Configuring SDM Templates">[10]</a></span></li>
+        <li>SG-ACEs use security ACL TCAM on the enforcing edge. Catalyst Center lists 5,000 SG-ACEs for the 9300, and the data sheet lists 5,120 security ACL entries.<span class="ref"><a href="#src-11" title="Cisco Catalyst Center Data Sheet (SD-Access scale, release 2.3.7)">[11]</a></span><span class="ref"><a href="#src-9" title="Cisco Catalyst 9300 Series Switches Data Sheet">[9]</a></span></li>
+        <li>Cisco doesn't publish per-resource values for the standard Access template on the SUP-2XL, so they're shown as “Depends on supervisor / line card / hardware configuration”.</li></ul></div>
+      <div class="note-card"><h3><span class="n">10</span>SDA scale considerations</h3><ul>
+        <li>The site has 62 fabric devices against a limit of 500–1,200 per site, depending on the Catalyst Center appliance. Intermediates don't count toward the limit.<span class="ref"><a href="#src-11" title="Cisco Catalyst Center Data Sheet (SD-Access scale, release 2.3.7)">[11]</a></span><span class="ref"><a href="#src-12" title="Cisco Software-Defined Access Solution Design Guide (CVD)">[12]</a></span></li>
+        <li>CP: 150,000 endpoints, with every IPv4 and IPv6 address counted, against about 6,000–8,000 for 2,000 users. Border: 48,000 IPv4 routes and 150,000 host entries.<span class="ref"><a href="#src-11" title="Cisco Catalyst Center Data Sheet (SD-Access scale, release 2.3.7)">[11]</a></span></li>
+        <li>Per site: 64–256 L3 VNs and 100–1,000 IP pools, depending on the appliance. Each device supports 256 VNs.<span class="ref"><a href="#src-11" title="Cisco Catalyst Center Data Sheet (SD-Access scale, release 2.3.7)">[11]</a></span></li>
+        <li>Two CPs of the same model are recommended. Use dedicated CPs if wireless roaming is frequent.<span class="ref"><a href="#src-12" title="Cisco Software-Defined Access Solution Design Guide (CVD)">[12]</a></span></li>
+        <li>Check the IOS XE and Catalyst Center releases against the SD-Access compatibility matrix.<span class="ref"><a href="#src-13" title="Cisco SD-Access Compatibility Matrix">[13]</a></span></li></ul></div>
+      <div class="note-card"><h3><span class="n">11</span>Assumptions</h3><ul>
+        <li>About 2,000 users behind the edge nodes, with 3–4 endpoints each. Each C9500-24Y4C combines the CP, an anywhere border (CP + BN) and the underlay core joining both intermediate groups. Cisco calls co-location the most common deployment.<span class="ref"><a href="#src-12" title="Cisco Software-Defined Access Solution Design Guide (CVD)">[12]</a></span></li>
+        <li>C9500 model C9500-24Y4C. Each intermediate is a C9404R with a single SUP-2XL and one LC-48XS, with no intermediate cross-links. Edge nodes are standalone C9300-48U switches with an NM-8X.</li>
+        <li>Links are routed P2P /31 with IS-IS (LAN Automation or manual), BFD, PIM-SM and MTU 9100. The seed cross-link follows CVD guidance, including CLNS MTU 1400.<span class="ref"><a href="#src-12" title="Cisco Software-Defined Access Solution Design Guide (CVD)">[12]</a></span></li>
+        <li>The fusion or firewall pair (FUS-1, FUS-2) is out of scope. Each border has an assumed 25G VRF-lite handoff, with eBGP per VN, to each of them.</li>
+        <li>LISP Pub/Sub control plane: if a border loses its external routes, the edges switch to the other border, so the borders need no per-VN iBGP between them.<span class="ref"><a href="#src-16" title="Cisco Validated Profile: IT-Enabled Services (SD-Access) Vertical">[16]</a></span></li>
+        <li>Endpoint counts are estimates, and the optics shown are examples. Port positions in the diagram are schematic.</li>
+        <li>Software minimums: IOS XE 17.8+ for the LC-48XS, and 17.11.1+ for a custom SDM template on the SUP-2XL. Confirm licensing with Cisco.</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<section id="sources" class="section" aria-labelledby="h-src">
+  <div class="wrap">
+    <div class="sec-head"><h2 id="h-src">Sources / Cisco references</h2><p>Official Cisco documents used for the hardware, interface, TCAM and scale values on this page. Values can change between releases, so check the current versions.</p></div>
+    <ol class="sources" id="srcList">
+<li id="src-1"><a href="https://www.cisco.com/c/en/us/products/collateral/switches/catalyst-9500-series-switches/nb-06-cat9500-ser-data-sheet-cte-en.html" target="_blank" rel="noopener">Cisco Catalyst 9500 Series Switches Data Sheet</a><span class="what">C9500-24Y4C ports (24 × SFP28 + 4 × QSFP28), switching and forwarding capacity, buffer, and the MAC / route / ACL scale and SDM templates shared by the C9500-32C, -32QC, -24Y4C and -48Y4C.</span></li>
+<li id="src-2"><a href="https://www.cisco.com/c/en/us/products/collateral/switches/catalyst-9500-series-switches/nb-06-cat9500-architecture-cte-en.html" target="_blank" rel="noopener">Cisco Catalyst 9500 Series Switches Architecture White Paper</a><span class="what">UADP 3.0 ASIC design for the high-performance models: FIB and ACL TCAM sizes and how IPv4 and IPv6 share them.</span></li>
+<li id="src-3"><a href="https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst9500/hardware/install/b_catalyst_9500_hig/9500_product-overview.html" target="_blank" rel="noopener">Cisco Catalyst 9500 Series Switches Hardware Installation Guide: Product Overview</a><span class="what">Front-panel port layout and port numbering for the C9500-24Y4C (SFP28 ports 1–24, QSFP28 ports 25–28).</span></li>
+<li id="src-4"><a href="https://www.cisco.com/c/en/us/products/collateral/switches/catalyst-9400-series-switches/nb-06-cat9400-ser-data-sheet-cte-en.html" target="_blank" rel="noopener">Cisco Catalyst 9400 Series Switches Data Sheet</a><span class="what">C9404R chassis: slot layout, per-slot bandwidth and system capacity.</span></li>
+<li id="src-5"><a href="https://www.cisco.com/c/en/us/products/collateral/switches/catalyst-9400-series-switches/nb-06-cat9400-ser-sup-eng-data-sheet-cte-en.html" target="_blank" rel="noopener">Cisco Catalyst 9400 Series Supervisor Engines Data Sheet</a><span class="what">C9400X-SUP-2XL: UADP 3.0sec, uplink ports, switching capacity, buffer, and IPv4/IPv6, MAC and ACL/QoS scale (custom SDM).</span></li>
+<li id="src-6"><a href="https://www.cisco.com/c/en/us/products/collateral/switches/catalyst-9400-series-switches/nb-06-cat9400-series-line-data-sheet-cte-en.html" target="_blank" rel="noopener">Cisco Catalyst 9400 Series Line Cards Data Sheet</a><span class="what">C9400-LC-48XS 48 × 10G SFP+ fiber line card: ports, per-slot bandwidth, supervisor and software requirements.</span></li>
+<li id="src-7"><a href="https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst9400/hardware/sup_install/b-c9400-sup-note.html" target="_blank" rel="noopener">Cisco Catalyst 9400 Series Supervisor Module Installation Note</a><span class="what">Supervisor slot rules and SUP-2XL uplink port groups (port 5 vs. ports 1–4).</span></li>
+<li id="src-8"><a href="https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst9400/software/release/17-13/configuration_guide/sys_mgmt/b_1713_sys_mgmt_9400_cg/configuring_sdm_templates.html" target="_blank" rel="noopener">Catalyst 9400 System Management Configuration Guide, IOS XE 17.13.x: Configuring SDM Templates</a><span class="what">SDM templates available on C9400 supervisors and the custom template’s FIB / ACL resource split.</span></li>
+<li id="src-9"><a href="https://www.cisco.com/c/en/us/products/collateral/switches/catalyst-9300-series-switches/nb-06-cat9300-ser-data-sheet-cte-en.html" target="_blank" rel="noopener">Cisco Catalyst 9300 Series Switches Data Sheet</a><span class="what">C9300-48U and C9300-NM-8X: ports, UPOE, switching capacity, and MAC / route / ACL scale.</span></li>
+<li id="src-10"><a href="https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst9300/software/release/17-17/configuration_guide/sys_mgmt/b_1717_sys_mgmt_9300_cg/configuring_sdm_templates.html" target="_blank" rel="noopener">Catalyst 9300 System Management Configuration Guide, IOS XE 17.17.x: Configuring SDM Templates</a> · <a href="https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst9300/software/release/17-5/configuration_guide/sys_mgmt/b_175_sys_mgmt_9300_cg/configuring_sdm_templates.pdf" target="_blank" rel="noopener">17.5.x PDF</a><span class="what">C9300 Access and NAT templates, per-feature table sizes, and IPv6 double-width entries.</span></li>
+<li id="src-11"><a href="https://www.cisco.com/c/en/us/products/collateral/cloud-systems-management/dna-center/nb-06-dna-center-data-sheet-cte-en.html" target="_blank" rel="noopener">Cisco Catalyst Center Data Sheet (SD-Access scale, release 2.3.7)</a><span class="what">Per-platform SD-Access limits for CP, border and edge roles: endpoints, VNs, routes, IP-SGT bindings, policies and SG-ACEs.</span></li>
+<li id="src-12"><a href="https://www.cisco.com/c/en/us/td/docs/solutions/CVD/Campus/cisco-sda-design-guide.html" target="_blank" rel="noopener">Cisco Software-Defined Access Solution Design Guide (CVD)</a><span class="what">Fabric roles, CP/border co-location, underlay design (IS-IS, MTU, BFD), LAN Automation and seed-device links.</span></li>
+<li id="src-13"><a href="https://www.cisco.com/c/en/us/solutions/enterprise-networks/software-defined-access/compatibility-matrix.html" target="_blank" rel="noopener">Cisco SD-Access Compatibility Matrix</a><span class="what">Supported platform, IOS XE and Catalyst Center combinations for each fabric role.</span></li>
+<li id="src-14"><a href="https://tmgmatrix.cisco.com/" target="_blank" rel="noopener">Cisco Transceiver Module Group (TMG) Compatibility Matrix</a><span class="what">Supported SFP+, SFP28 and QSFP28 optics and cables for each platform.</span></li>
+<li id="src-15"><a href="https://www.cisco.com/c/en/us/products/collateral/switches/catalyst-9500-series-switches/c9500-12q-c9500-24q-c9500-40x-eol.html" target="_blank" rel="noopener">End-of-Sale and End-of-Life Announcement for the Cisco C9500-12Q, C9500-24Q and C9500-40X</a><span class="what">C9500-12Q milestones: last order 30 April 2024, end of software maintenance 30 April 2025, last supported release IOS XE 17.18, last date of support 30 April 2029, replacement C9500-32QC.</span></li>
+<li id="src-16"><a href="https://www.cisco.com/c/en/us/td/docs/cloud-systems-management/network-automation-and-management/catalyst-center/cisco-validated-solution-profiles/validated_profile_ites_vertical.html" target="_blank" rel="noopener">Cisco Validated Profile: IT-Enabled Services (SD-Access) Vertical</a><span class="what">LISP Pub/Sub border failover: the control plane tells subscribed edges when a border&#x27;s default route fails, without per-VN iBGP between the borders.</span></li>
+</ol>
+  </div>
+</section>
+</main>
+<footer><div class="wrap">This is a design reference. Validate part numbers, software releases, optics and licensing against current Cisco documentation before ordering.</div></footer>
+
+<aside class="drawer" id="drawer" role="dialog" aria-modal="false" aria-labelledby="dTitle">
+  <div class="d-head">
+    <div id="dChip"></div>
+    <h3 id="dTitle">Details</h3>
+    <p class="d-sub" id="dSub"></p>
+    <button class="btn icon d-close" id="dClose" aria-label="Close details">×</button>
+  </div>
+  <div class="d-body" id="dBody"></div>
+</aside>
+<div class="tip" id="tip" role="tooltip" hidden></div>
+
+<script>
+(() => {
+'use strict';
+const SRC_T = {"1": "Cisco Catalyst 9500 Series Switches Data Sheet", "2": "Cisco Catalyst 9500 Series Switches Architecture White Paper", "3": "Cisco Catalyst 9500 Series Switches Hardware Installation Guide: Product Overview", "4": "Cisco Catalyst 9400 Series Switches Data Sheet", "5": "Cisco Catalyst 9400 Series Supervisor Engines Data Sheet", "6": "Cisco Catalyst 9400 Series Line Cards Data Sheet", "7": "Cisco Catalyst 9400 Series Supervisor Module Installation Note", "8": "Catalyst 9400 System Management Configuration Guide, IOS XE 17.13.x: Configuring SDM Templates", "9": "Cisco Catalyst 9300 Series Switches Data Sheet", "10": "Catalyst 9300 System Management Configuration Guide, IOS XE 17.17.x: Configuring SDM Templates", "11": "Cisco Catalyst Center Data Sheet (SD-Access scale, release 2.3.7)", "12": "Cisco Software-Defined Access Solution Design Guide (CVD)", "13": "Cisco SD-Access Compatibility Matrix", "14": "Cisco Transceiver Module Group (TMG) Compatibility Matrix", "15": "End-of-Sale and End-of-Life Announcement for the Cisco C9500-12Q, C9500-24Q and C9500-40X", "16": "Cisco Validated Profile: IT-Enabled Services (SD-Access) Vertical"};
+const NS = 'http://www.w3.org/2000/svg';
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const ref = (...ids) => ids.map(i => `<span class="ref"><a href="#src-${i}" title="${esc(SRC_T[i] || '')}">[${i}]</a></span>`).join('');
+const DEP = '<span class="dep">Depends on supervisor / line card / hardware configuration</span>';
+
+/* ---------------- geometry ---------------- */
+const CPX = {cp1: 640, cp2: 1140}, CP_Y = 136, CP_W = 300, CP_H = 124;
+const FUSX = {fus1: 640, fus2: 1140}, FUS_Y = 16, FUS_W = 300, FUS_H = 48;
+const INTX = {int1: 371, int2: 701, int3: 1079, int4: 1409}, INT_Y = 490, INT_W = 270, INT_H = 164;
+const EN_Y = 830, EN_W = 118, EN_H = 88, CHIP_Y = 966, CHIP_H = 40;
+const CP_OFF = [-84, -28, 28, 84];
+const SLOTS = [
+  {id:'en1', n:1, cx:264, g:1, i:0}, {id:'en2', n:2, cx:400, g:1, i:1}, {id:'enx1', r:[3,28], cx:536, g:1, i:2},
+  {id:'en29', n:29, cx:672, g:1, i:3}, {id:'en30', n:30, cx:808, g:1, i:4},
+  {id:'en31', n:31, cx:972, g:2, i:0}, {id:'en32', n:32, cx:1108, g:2, i:1}, {id:'enx2', r:[33,58], cx:1244, g:2, i:2},
+  {id:'en59', n:59, cx:1380, g:2, i:3}, {id:'en60', n:60, cx:1516, g:2, i:4}
+];
+const grpInts = g => g === 1 ? ['int1', 'int2'] : ['int3', 'int4'];
+const intBottomX = (it, i) => INTX[it] - INT_W / 2 + 30 + i * 52.5;
+const localPort = n => n <= 30 ? n : n - 30;
+const PARTNER = {int1:'int2', int2:'int1', int3:'int4', int4:'int3'};
+const GL = g => g === 1 ? 'A' : 'B';
+
+const NAME = {fus1:'FUS-1', fus2:'FUS-2', cp1:'CP/BN-1', cp2:'CP/BN-2', int1:'INT-A1', int2:'INT-A2', int3:'INT-B1', int4:'INT-B2', enx1:'EN-3 … EN-28', enx2:'EN-33 … EN-58'};
+for (let n = 1; n <= 60; n++) NAME['en' + n] = 'EN-' + n;
+const ROLE = id => id.startsWith('fus') ? 'ext' : id.startsWith('cp') ? 'cp' : id.startsWith('int') ? 'int' : 'en';
+
+/* ---------------- svg helpers ---------------- */
+function S(tag, attrs, parent) {
+  const e = document.createElementNS(NS, tag);
+  if (attrs) for (const k in attrs) { const v = attrs[k]; if (v !== undefined && v !== null && v !== false) e.setAttribute(k, v); }
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function T(parent, x, y, txt, cls, extra) { const t = S('text', Object.assign({x, y, class: cls}, extra || {}), parent); t.textContent = txt; return t; }
+function vbez(x0, y0, x3, y3) { const ym = (y0 + y3) / 2; return `M${x0},${y0} C${x0},${ym} ${x3},${ym} ${x3},${y3}`; }
+function bez(x0, y0, x3, y3, t) {
+  const ym = (y0 + y3) / 2, m = 1 - t, a = m * m * m, b = 3 * m * m * t, c = 3 * m * t * t, d = t * t * t;
+  return {x: (a + b) * x0 + (c + d) * x3, y: a * y0 + (b + c) * ym + d * y3};
+}
+function topRounded(x, y, w, h, r) { return `M${x},${y + h} V${y + r} A${r},${r} 0 0 1 ${x + r},${y} H${x + w - r} A${r},${r} 0 0 1 ${x + w},${y + r} V${y + h} Z`; }
+
+/* ---------------- port descriptors ---------------- */
+const cpHu = (dev, n, dir) => ({dev, model:'C9500-24Y4C', short:'Hu1/0/' + n, ifc:'HundredGigE1/0/' + n, type:'QSFP28 · 40/100G port', medium:'Fiber', speed:'100 Gbps', sc:'s100', dir});
+const cpTwe = (dev, n, dir) => ({dev, model:'C9500-24Y4C', short:'Twe1/0/' + n, ifc:'TwentyFiveGigE1/0/' + n, type:'SFP28 · 1/10/25G port', medium:'Fiber', speed:'25 Gbps', sc:'s25', dir});
+const supHu = (dev, n, dir) => ({dev, model:'C9400X-SUP-2XL · C9404R slot 2', short:'Hu2/0/' + n, ifc:'HundredGigE2/0/' + n, type:'QSFP28 · 40/100G port', medium:'Fiber', speed:'100 Gbps', sc:'s100', dir});
+const lcTe = (dev, n, dir) => ({dev, model:'C9400-LC-48XS · C9404R slot 1', short:'Te1/0/' + n, ifc:'TenGigabitEthernet1/0/' + n, type:'SFP+ · 1/10G port', medium:'Fiber', speed:'10 Gbps', sc:'s10', dir});
+const nmTe = (dev, n, dir) => ({dev, model:'C9300-48U · C9300-NM-8X', short:'Te1/1/' + n, ifc:'TenGigabitEthernet1/1/' + n, type:'SFP+ · 1/10G port', medium:'Fiber', speed:'10 Gbps', sc:'s10', dir});
+const MED = {
+  q100: 'Fiber · QSFP28 100G optic, e.g. QSFP-100G-SR4-S (MMF) or QSFP-100G-LR4-S (SMF)',
+  s25: 'Fiber · SFP28 25G optic, e.g. SFP-25G-SR-S (MMF) or SFP-10/25G-LR-S (SMF)',
+  s10: 'Fiber · SFP+ 10G optic, e.g. SFP-10G-SR-S (MMF) or SFP-10G-LR-S (SMF)',
+  cu: 'Copper · Category 5e/6 twisted pair, RJ-45',
+  ho: 'Fiber · SFP28 optic matched to the fusion / firewall platform'
+};
+const L3 = 'Routed point-to-point /31 · IS-IS P2P · BFD · PIM-SM · MTU 9100';
+
+/* ---------------- links ---------------- */
+const LINKS = [], LMAP = {};
+const addLink = l => { LINKS.push(l); LMAP[l.id] = l; };
+
+['int1', 'int2', 'int3', 'int4'].forEach((it, ii) => {
+  ['cp1', 'cp2'].forEach((cp, ci) => {
+    const cpPort = 25 + ii, intPort = 6 + ci;
+    const x0 = INTX[it] + (ci ? 34 : -34), y0 = INT_Y, x3 = CPX[cp] + CP_OFF[ii], y3 = CP_Y + CP_H;
+    const other = NAME[ci ? 'cp1' : 'cp2'], otherPort = ci ? 6 : 7, G = GL(ii < 2 ? 1 : 2);
+    addLink({
+      id: `${it}-${cp}`, cls: 'l100', a: it, b: cp, n: 1,
+      s: supHu(it, intPort, 'Uplink'), d: cpHu(cp, cpPort, 'Downlink'),
+      medium: MED.q100, speed: '100 Gbps', cap: '40 / 100 Gbps', thr: '100 Gbps per direction (line rate, full duplex)',
+      role: `Uplink for ${NAME[it]} · downlink for ${NAME[cp]}`,
+      red: `One of two equal-cost (ECMP) uplinks from ${NAME[it]}. The other is Hu2/0/${otherPort} → ${other}. If this link fails, ${NAME[it]} keeps 100 Gbps through ${other}, and ${NAME[cp]} still reaches every Group ${G} edge node through ${NAME[PARTNER[it]]}.`,
+      l3: L3, path: vbez(x3, y3, x0, y0), ends: [[x3, y3, 'b'], [x0, y0, 't']],
+      pill: {at: bez(x3, y3, x0, y0, 0.5), txt: '100G'},
+      labels: [[x3, y3 + 13, `Hu1/0/${cpPort}`, 'middle'], [x0, y0 - 7, `Hu2/0/${intPort}`, 'middle']]
+    });
+  });
+});
+[1, 2].forEach((k, ki) => {
+  const y = ki ? 206 : 186;
+  addLink({
+    id: `cp1-cp2-${k}`, cls: 'l25', a: 'cp1', b: 'cp2', n: 1,
+    s: cpTwe('cp1', k, 'Cross-link'), d: cpTwe('cp2', k, 'Cross-link'),
+    medium: MED.s25, speed: '25 Gbps', cap: '1 / 10 / 25 Gbps', thr: '25 Gbps per direction · 2 links = 50 Gbps',
+    role: 'Cross-link between the two CP/BN nodes',
+    red: `Member ${k} of 2. It carries the underlay IS-IS adjacency between the two seed devices, following the CVD seed cross-link guidance (P2P, BFD, CLNS MTU 1400, PIM-SM, MTU 9100). With LISP Pub/Sub the borders don't need per-VN iBGP over this link: if a border loses its external routes, the control plane tells the edges to use the other border.`,
+    l3: 'Routed P2P /31 · IS-IS P2P · BFD · CLNS MTU 1400 · PIM-SM · MTU 9100',
+    path: `M790,${y} L990,${y}`, ends: [[790, y, 'r'], [990, y, 'l']],
+    pill: ki ? null : {at: {x: 890, y: 196}, txt: '2 × 25G'},
+    labels: ki ? [] : [[797, 178, 'Twe1/0/1–2', 'start'], [983, 178, 'Twe1/0/1–2', 'end']]
+  });
+});
+const HO = [['cp1', 23, 'fus1', 700, 700], ['cp1', 24, 'fus2', 730, 1050], ['cp2', 23, 'fus1', 1050, 730], ['cp2', 24, 'fus2', 1080, 1080]];
+HO.forEach(([cp, port, fus, xa, xb]) => {
+  const yb = FUS_Y + FUS_H, other = port === 23 ? 24 : 23, otherFus = fus === 'fus1' ? 'fus2' : 'fus1';
+  addLink({
+    id: `${cp}-${fus}`, cls: 'lho', a: cp, b: fus, n: 1,
+    s: cpTwe(cp, port, 'Uplink · handoff'),
+    d: {dev: fus, model: 'Fusion router / firewall (not specified)', short: 'Fusion port', ifc: 'Depends on the fusion platform', type: 'Match to the fusion (SFP28 25G assumed)', medium: 'Fiber', speed: '25 Gbps (assumed)', sc: 'ho', dir: 'Handoff peer'},
+    medium: MED.ho, speed: '25 Gbps (assumed)', cap: '1 / 10 / 25 Gbps', thr: '25 Gbps per direction · 50 Gbps per border · 100 Gbps north–south in total',
+    role: `Border handoff (north–south) from ${NAME[cp]} to ${NAME[fus]}`,
+    red: `Handoff ${port - 22} of 2 from ${NAME[cp]}: Twe1/0/23 goes to FUS-1 and Twe1/0/24 to FUS-2, so each border is dual-homed to both fusion devices. If this link or ${NAME[fus]} fails, ${NAME[cp]} keeps 25 Gbps through Twe1/0/${other} → ${NAME[otherFus]}.`,
+    l3: 'VRF-lite: 802.1Q trunk with one VLAN/SVI and one eBGP session per VN (Catalyst Center IP transit)',
+    path: vbez(xa, CP_Y, xb, yb), ends: [[xa, CP_Y, 't'], [xb, yb, 'b']],
+    pill: {at: xa === xb ? {x: xa, y: 100} : bez(xa, CP_Y, xb, yb, 0.24), txt: '25G'},
+    labels: port === 23 ? [[cp === 'cp1' ? 694 : 1086, 128, 'Twe1/0/23–24', cp === 'cp1' ? 'end' : 'start']] : []
+  });
+});
+SLOTS.forEach(sl => {
+  const [ia, ib] = grpInts(sl.g);
+  [[ia, 1, -20], [ib, 2, 20]].forEach(([it, tp, off]) => {
+    const side = tp;
+    const x0 = intBottomX(it, sl.i), y0 = INT_Y + INT_H, x3 = sl.cx + off, y3 = EN_Y;
+    const other = it === ia ? ib : ia, otp = tp === 1 ? 2 : 1;
+    const base = {a: sl.id, b: it, path: vbez(x0, y0, x3, y3), ends: [[x0, y0, 'b'], [x3, y3, 't']], l3: L3, cap: '1 / 10 Gbps', medium: MED.s10};
+    if (sl.r) {
+      const [f, t] = sl.r, lf = localPort(f), lt = localPort(t);
+      addLink(Object.assign(base, {
+        id: `${sl.id}-${side}`, cls: 'lb10', n: 26,
+        s: {dev: sl.id, model: '26 × C9300-48U · C9300-NM-8X', short: 'Te1/1/' + tp, ifc: `TenGigabitEthernet1/1/${tp} on each switch`, type: 'SFP+ · 1/10G port', medium: 'Fiber', speed: '26 × 10 Gbps', sc: 's10', dir: 'Uplink ' + side},
+        d: {dev: it, model: 'C9400-LC-48XS · C9404R slot 1', short: `Te1/0/${lf}–${lt}`, ifc: `TenGigabitEthernet1/0/${lf}–${lt}`, type: 'SFP+ · 1/10G ports', medium: 'Fiber', speed: '26 × 10 Gbps', sc: 's10', dir: 'Downlinks'},
+        speed: '10 Gbps per link', thr: '26 × 10 Gbps = 260 Gbps aggregate',
+        role: `Uplink ${side} for each of EN-${f} … EN-${t} · downlinks from ${NAME[it]}`,
+        red: `Each EN-n in this range connects Te1/1/${tp} to ${NAME[it]} Te1/0/${sl.g === 1 ? 'n' : '(n−30)'}. That's one of its two ECMP uplinks, and the other goes to ${NAME[other]}.`,
+        pill: {at: bez(x0, y0, x3, y3, 0.88), txt: '26×10G'},
+        labels: [[x0, y0 + 13, `Te1/0/${lf}–${lt}`, 'middle']]
+      }));
+    } else {
+      const lp = localPort(sl.n);
+      addLink(Object.assign(base, {
+        id: `${sl.id}-${side}`, cls: 'l10', n: 1,
+        s: nmTe(sl.id, tp, 'Uplink ' + side), d: lcTe(it, lp, 'Downlink'),
+        speed: '10 Gbps', thr: '10 Gbps per direction · edge total 2 × 10G = 20 Gbps',
+        role: `Uplink ${side} for EN-${sl.n} · downlink for ${NAME[it]}`,
+        red: `Uplink ${side} of 2, equal-cost (ECMP) with Te1/1/${otp} → ${NAME[other]}. If either link or either intermediate fails, EN-${sl.n} keeps 10 Gbps and its endpoints stay up.`,
+        pill: {at: bez(x0, y0, x3, y3, 0.88), txt: '10G'},
+        labels: [[x0, y0 + 13, `Te1/0/${lp}`, 'middle']]
+      }));
+    }
+  });
+  const cx = sl.cx, isB = !!sl.r;
+  addLink({
+    id: `${sl.id}-acc`, cls: 'lcu', a: sl.id, b: null, n: isB ? 1248 : 48, acc: true,
+    s: {dev: sl.id, model: isB ? '26 × C9300-48U' : 'C9300-48U', short: 'Gi1/0/1–48', ifc: 'GigabitEthernet1/0/1–48' + (isB ? ' on each switch' : ''), type: '10/100/1000BASE-T · RJ-45 · Cisco UPOE (60 W)', medium: 'Copper', speed: '1 Gbps per port', sc: 'cu', dir: 'Access downlink'},
+    d: {dev: null, name: 'Endpoints', model: 'APs · IP phones · PCs', short: 'Endpoint NIC', ifc: 'Single-homed', type: 'RJ-45', medium: 'Copper', speed: 'Up to 1 Gbps', sc: 'cu', dir: 'Endpoint'},
+    medium: MED.cu, speed: '1 Gbps per port', cap: '10 / 100 / 1000 Mbps',
+    thr: isB ? '1,248 × 1 Gbps across 26 edge nodes' : '48 × 1 Gbps = 48 Gbps per edge node',
+    role: 'Access downlink to endpoints',
+    red: 'None at the port, because endpoints are single-homed. Resiliency comes from the edge node\'s dual uplinks. Cisco UPOE delivers up to 60 W per port.',
+    l3: 'Anycast gateway SVI per IP pool · 802.1X / MAB host onboarding',
+    lines: [cx - 26, cx, cx + 26].map(x => `M${x},${EN_Y + EN_H} L${x},${CHIP_Y}`),
+    ends: [[cx - 26, EN_Y + EN_H, 'b'], [cx, EN_Y + EN_H, 'b'], [cx + 26, EN_Y + EN_H, 'b']],
+    chip: {cx, t1: isB ? '1,248 × 1G RJ-45' : '48 × 1G RJ-45', t2: isB ? '26 × 48 access ports' : 'UPOE · endpoints'},
+    labels: []
+  });
+});
+
+/* ---------------- device data ---------------- */
+const DEV = {};
+const kv = rows => '<dl class="kv">' + rows.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('') + '</dl>';
+const sec = (t, h) => `<section class="d-sec"><h4>${t}</h4>${h}</section>`;
+const ifTable = rows => '<table class="d-table"><thead><tr><th>Interface</th><th>Port · speed</th><th>Peer</th><th>Role</th></tr></thead><tbody>' +
+  rows.map(r => `<tr><td class="mono">${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td></tr>`).join('') + '</tbody></table>';
+const refsLine = (...ids) => `<p class="d-refs">Sources: ${ids.map(i => `<a href="#src-${i}" title="${esc(SRC_T[i] || '')}">[${i}] ${esc(SRC_T[i] || '')}</a>`).join('<br>')}</p>`;
+
+function cpInfo(id) {
+  const nm = NAME[id], peer = NAME[id === 'cp1' ? 'cp2' : 'cp1'], hu = id === 'cp1' ? 6 : 7, alt = id === 'cp1' ? 7 : 6;
+  return {
+    role: 'cp', chip: 'Control Plane + Border', title: nm, sub: 'Cisco Catalyst C9500-24Y4C · co-located CP · anywhere border · underlay core',
+    tip: [`${nm} · Control Plane + anywhere Border`, 'Cisco Catalyst C9500-24Y4C', '↓ 4 × 100G QSFP28 Hu1/0/25–28 · ↔ 2 × 25G Twe1/0/1–2 · ↑ 2 × 25G Twe1/0/23–24'],
+    html:
+      sec('Role in the fabric', `<p>LISP Map-Server / Map-Resolver for the whole fabric site, active/active with ${peer}. Every edge and border registers with both CPs, and each CP holds the full host tracking database (HTDB).${ref(12)} ${nm} is also an <b>anywhere border</b> (internal + external): it hands every VN off to FUS-1 and FUS-2 with VRF-lite, imports the external routes into each VN and is a default exit for the fabric. It's part of the routed <b>underlay core</b> joining Intermediate Group A and Group B as well.</p>`) +
+      sec('Hardware', kv([
+        ['Model', 'Cisco Catalyst C9500-24Y4C (Catalyst 9500 High Performance); orderable as -A or -E license variants' + ref(1)],
+        ['Ports', '24 × 1/10/25G SFP28 (TwentyFiveGigE1/0/1–24) + 4 × 40/100G QSFP28 (HundredGigE1/0/25–28)' + ref(1, 3)],
+        ['ASIC', 'Cisco UADP 3.0 · 36 MB unified buffer' + ref(1, 2)],
+        ['Capacity', 'Up to 2.0 Tbps switching · up to 1 Bpps forwarding' + ref(1)],
+        ['CPU / memory', 'x86 2.4 GHz 4-core · 16 GB DDR4 · 16 GB flash' + ref(1, 2)],
+        ['Power', '2 power-supply slots' + ref(3)],
+        ['Management', 'GigabitEthernet0/0 RJ-45 (Mgmt-vrf)']
+      ])) +
+      sec('Interfaces in use', ifTable([
+        ['Hu1/0/25', 'QSFP28 · 100G', `INT-A1 Hu2/0/${hu}`, 'Downlink'],
+        ['Hu1/0/26', 'QSFP28 · 100G', `INT-A2 Hu2/0/${hu}`, 'Downlink'],
+        ['Hu1/0/27', 'QSFP28 · 100G', `INT-B1 Hu2/0/${hu}`, 'Downlink'],
+        ['Hu1/0/28', 'QSFP28 · 100G', `INT-B2 Hu2/0/${hu}`, 'Downlink'],
+        ['Twe1/0/1–2', 'SFP28 · 2 × 25G', `${peer} Twe1/0/1–2`, 'Cross-link'],
+        ['Twe1/0/23', 'SFP28 · 25G', 'FUS-1', 'Handoff'],
+        ['Twe1/0/24', 'SFP28 · 25G', 'FUS-2', 'Handoff'],
+        ['Twe1/0/3–22', 'SFP28 · 1/10/25G', '—', 'Spare (20): WLC, extra handoffs'],
+        ['Gi0/0', 'RJ-45 · copper', 'OOB network', 'Management']
+      ])) +
+      sec('Throughput', kv([
+        ['Downlinks', '4 × 100G = <b>400 Gbps</b>, one link to each intermediate'],
+        ['Cross-link', `2 × 25G = 50 Gbps to ${peer}`],
+        ['Handoff', '2 × 25G = 50 Gbps north–south, one link to each fusion device'],
+        ['Oversubscription', '8 : 1 north–south. East–west traffic between the groups turns here at line rate.'],
+        ['Ports in use', '8 of 28 · 500 Gbps of the 1 Tbps front-panel bandwidth (per direction)']
+      ])) +
+      sec('TCAM / SDM resources · SD-Access template', kv([
+        ['Hardware totals', '416K double-width FIB entries · 54K ACL TCAM' + ref(2)],
+        ['IPv4 / IPv6', '212K LPM + host (shared pool) · up to 256K routes with custom SDM' + ref(1)],
+        ['Host / ARP', '80K adjacencies (SVI) · 90K direct routes (routed ports)' + ref(1)],
+        ['MAC', '32K' + ref(1)],
+        ['Security / QoS ACL', '27K / 16K' + ref(1)],
+        ['SGT / MPLS labels', '32K' + ref(1)]
+      ]) + '<p class="note">These SDM tables are the same on the C9500-32C, -32QC, -24Y4C and -48Y4C. See the highlighted "Control-plane resources" section for how each SD-Access function maps to them.</p>') +
+      sec('SD-Access scale · Catalyst 9500 High Performance (“9500H”)', kv([
+        ['Control plane', '<b>150,000 endpoints</b>' + ref(11)],
+        ['Border', '256 VNs · 48,000 IPv4 routes · 150,000 fabric host entries' + ref(11)],
+        ['Policy (border)', '200,000 IPv4–SGT bindings · 16,000 SGT/DGT policies · 13,000 SG-ACEs' + ref(11)],
+        ['This site', '≈ 6,000–8,000 endpoints for 2,000 users, about 5% of the CP scale']
+      ])) +
+      sec('Redundancy role', `<p>Active/active with ${peer}.${ref(12)} If ${nm} fails, ${peer} answers every map-request and registration, each intermediate keeps one 100G uplink (Hu2/0/${alt}) to ${peer}, and north–south traffic continues through ${peer}'s links to FUS-1 and FUS-2. If ${nm} loses only its external routes, LISP Pub/Sub tells the edges to use ${peer}.${ref(16)}</p>`) +
+      refsLine(1, 2, 3, 11, 12, 16)
+  };
+}
+function intInfo(id) {
+  const n = +id.slice(3), nm = NAME[id], g = n <= 2 ? 1 : 2, G = GL(g), up = n % 2 ? 1 : 2, partner = NAME[PARTNER[id]];
+  const f = g === 1 ? 1 : 31, t = g === 1 ? 30 : 60, enPort = 'Te1/1/' + up, cpPort = 24 + n;
+  return {
+    role: 'int', chip: 'Intermediate', title: nm, sub: `C9404R + C9400X-SUP-2XL + C9400-LC-48XS · Group ${G} · edge uplink ${up}`,
+    tip: [`${nm} · Intermediate Node (Group ${G})`, 'C9404R · C9400X-SUP-2XL · C9400-LC-48XS', `↑ 2 × 100G Hu2/0/6–7 · ↓ 30 × 10G Te1/0/1–30 (edge ${enPort})`],
+    html:
+      sec('Role in the fabric', `<p>An underlay-only router for Group ${G}. It routes VXLAN-encapsulated fabric traffic by the outer IP header between EN-${f} … EN-${t} and the CP/BN nodes, running IS-IS, BFD and PIM-SM with MTU 9100. It does no LISP, VXLAN or SGT processing and doesn't count toward fabric-device limits.${ref(12)}</p>`) +
+      sec('Hardware', kv([
+        ['Chassis', 'C9404R. Line-card slots 1 and 4, supervisor slots 2 and 3.' + ref(4, 7)],
+        ['Slot 1', '<b>C9400-LC-48XS</b>: 48 × 10G SFP+ / 1G SFP (mixable). Line rate (1:1, 480 Gbps) with SUP-2XL. Requires SUP-2/2XL and IOS XE 17.8+.' + ref(6)],
+        ['Slot 2', '<b>C9400X-SUP-2XL</b>: 4 × SFP28 10/25G (ports 1–4) + 4 × QSFP28 40/100G (ports 5–8). Enabling port 5 disables ports 1–4.' + ref(5, 7)],
+        ['Slot 3', 'Empty. Optional 2nd C9400X-SUP-2XL for SSO.'],
+        ['Slot 4', 'Empty. Room for a growth line card.'],
+        ['ASIC', 'UADP 3.0sec on the supervisor · 108 MB buffer · 16 GB DRAM' + ref(5)],
+        ['Capacity', 'Up to 480 Gbps per line-card slot · 3 Bpps' + ref(5)],
+        ['Management', 'GigabitEthernet0/0 RJ-45 (Mgmt-vrf)']
+      ])) +
+      sec('Interfaces in use', ifTable([
+        ['Hu2/0/6', 'QSFP28 · 100G', `CP/BN-1 Hu1/0/${cpPort}`, 'Uplink'],
+        ['Hu2/0/7', 'QSFP28 · 100G', `CP/BN-2 Hu1/0/${cpPort}`, 'Uplink'],
+        ['Te1/0/1–30', 'SFP+ · 30 × 10G', `EN-${f} … EN-${t} ${enPort}`, 'Downlinks'],
+        ['Te1/0/31–48', 'SFP+ · 1/10G', '—', 'Spare (18)'],
+        ['Hu2/0/8', 'QSFP28 · 40/100G', '—', 'Spare'],
+        ['Twe2/0/1–4', 'SFP28 · 10/25G', '—', 'Spare (no intermediate cross-link)'],
+        ['Hu2/0/5', 'QSFP28 · 40/100G', '—', 'Spare (enabling it disables Twe2/0/1–4)'],
+        ['Gi0/0', 'RJ-45 · copper', 'OOB network', 'Management']
+      ])) +
+      sec('Throughput', kv([
+        ['Uplinks', '2 × 100G = <b>200 Gbps</b> (CP/BN-1, CP/BN-2)'],
+        ['Downlinks', '30 × 10G = <b>300 Gbps</b>, out of 480 Gbps line-card capacity'],
+        ['Oversubscription', '<b>1.5 : 1</b>']
+      ])) +
+      sec('TCAM / SDM resources · SUP-2XL', kv([
+        ['Standard template', 'Access only (IOS XE 17.7.1+). No NAT template, and SDA template not supported in software.' + ref(8, 5)],
+        ['Access-template values', DEP + ' Check with <span class="mono">show sdm prefer</span>.'],
+        ['Custom SDM (17.11.1+)', 'IPv4 up to 256K · IPv6 up to 256K · MAC up to 128K · Security ACL up to 27K · QoS up to 27K' + ref(5)],
+        ['Line card', 'No TCAM. All lookups happen on the supervisor.' + ref(6)],
+        ['Underlay need', '≈ 200 prefixes, which is negligible']
+      ])) +
+      sec('SD-Access scale', '<p>Not applicable. Intermediate nodes need only IP reachability and MTU ≥ 1,550 (9,100 recommended), and they aren\'t counted as fabric devices.' + ref(12) + '</p>') +
+      sec('Redundancy role', `<p>Group ${G}, paired with ${partner}. Every edge node in the group sends Te1/1/1 to INT-${G}1 and Te1/1/2 to INT-${G}2, so if ${nm} fails, EN-${f} … EN-${t} each keep 10 Gbps through ${partner}. There's no cross-link to ${partner}: each intermediate already has two 100G paths to the CP/BN pair, and every edge is dual-homed. With one supervisor the chassis has a single point of failure, but edge dual-homing covers it. For SSO, add a second SUP-2XL in slot 3 and re-home one CP/BN uplink to it. With two supervisors, each SUP-2XL has fewer active uplink ports.${ref(7)}</p>`) +
+      refsLine(4, 5, 6, 7, 8, 12)
+  };
+}
+const EN_HW = () => kv([
+  ['Model', 'Cisco Catalyst C9300-48U: 48 × 10/100/1000 Cisco UPOE (60 W) RJ-45; -A / -E license variants' + ref(9)],
+  ['Network module', 'C9300-NM-8X: 8 × 1/10G SFP+ (Te1/1/1–8)' + ref(9)],
+  ['ASIC', 'Cisco UADP 2.0 · 16 MB buffer' + ref(9)],
+  ['Capacity', '256 Gbps switching · 190.48 Mpps (standalone)' + ref(9)],
+  ['CPU / memory', 'x86 · 8 GB DRAM · 16 GB flash' + ref(9)],
+  ['Stacking', 'StackWise-480 capable. Standalone in this design.' + ref(9)],
+  ['Power', '1100 W AC PSU by default, plus a second PSU slot. Size the PoE budget from the data sheet.' + ref(9)],
+  ['Management', 'GigabitEthernet0/0 RJ-45 (Mgmt-vrf)']
+]);
+const EN_TCAM = () => kv([
+  ['IPv4', '32,000 routes (24,000 direct + 8,000 indirect)' + ref(9)],
+  ['IPv6', '16,000 (each IPv6 entry uses two entries)' + ref(9, 10)],
+  ['MAC', '32,000' + ref(9)],
+  ['Security / QoS ACL', '5,120 / 5,120' + ref(9)],
+  ['Templates', 'Access (default) · NAT' + ref(10)]
+]);
+const EN_SDA = () => kv([
+  ['Endpoints', '<b>6,000</b> per edge node' + ref(11)],
+  ['VNs', '256' + ref(11)],
+  ['Policy', '10,000 IPv4–SGT bindings · 8,000 SGT/DGT policies · 5,000 SG-ACEs' + ref(11)],
+  ['Wireless', '200 APs · 4,000 wireless endpoints' + ref(11)],
+  ['This site', '≈ 33 users per edge on average (2,000 ÷ 60), roughly 100–130 endpoints · about 2% of the limit']
+]);
+const EN_ROLE = `<p>Fabric edge. It's the anycast gateway for the endpoint IP pools and a LISP xTR that registers endpoints with CP/BN-1 and CP/BN-2. Map-cache entries are merged into CEF and installed in hardware.${ref(12)} It also does VXLAN-GPO encapsulation carrying the SGT, 802.1X / MAB onboarding, and SGACL enforcement.</p>`;
+function enInfo(n) {
+  const g = n <= 30 ? 1 : 2, G = GL(g), [ia, ib] = grpInts(g), p = localPort(n);
+  return {
+    role: 'en', chip: 'Edge Node', title: 'EN-' + n, sub: `Cisco Catalyst C9300-48U + C9300-NM-8X · Group ${G} · 1 of 60 edge nodes`,
+    tip: [`EN-${n} · Edge Node (Group ${G})`, 'C9300-48U + C9300-NM-8X', `↑ Te1/1/1 → ${NAME[ia]} Te1/0/${p} · Te1/1/2 → ${NAME[ib]} Te1/0/${p}`, '↓ Gi1/0/1–48 · 48 × 1G UPOE copper'],
+    html:
+      sec('Role in the fabric', EN_ROLE) +
+      sec('Hardware', EN_HW()) +
+      sec('Interfaces in use', ifTable([
+        ['Te1/1/1', 'SFP+ · 10G', `${NAME[ia]} Te1/0/${p}`, 'Uplink 1'],
+        ['Te1/1/2', 'SFP+ · 10G', `${NAME[ib]} Te1/0/${p}`, 'Uplink 2'],
+        ['Te1/1/3–8', 'SFP+ · 1/10G', '—', 'Spare (6)'],
+        ['Gi1/0/1–48', 'RJ-45 · 1G · UPOE', 'Endpoints', 'Access'],
+        ['Gi0/0', 'RJ-45 · copper', 'OOB network', 'Management']
+      ])) +
+      sec('Throughput', kv([['Access', '48 × 1G = 48 Gbps (copper)'], ['Uplinks', '2 × 10G = <b>20 Gbps</b> (fiber)'], ['Oversubscription', '<b>2.4 : 1</b>']])) +
+      sec('TCAM / SDM resources', EN_TCAM()) +
+      sec('SD-Access scale · Catalyst 9300', EN_SDA()) +
+      sec('Redundancy role', `<p>Dual-homed: Te1/1/1 goes to ${NAME[ia]} and Te1/1/2 to ${NAME[ib]}, as equal-cost (ECMP) routed uplinks. EN-${n} survives the loss of either uplink or either intermediate at 10 Gbps. Access ports are single-homed.</p>`) +
+      refsLine(9, 10, 11, 12)
+  };
+}
+function enxInfo(id) {
+  const g = id === 'enx1' ? 1 : 2, G = GL(g), [f, t] = g === 1 ? [3, 28] : [33, 58], [ia, ib] = grpInts(g);
+  let rows = '';
+  for (let n = f; n <= t; n++) rows += `<tr><td><b>EN-${n}</b></td><td class="mono">${NAME[ia]} Te1/0/${localPort(n)}</td><td class="mono">${NAME[ib]} Te1/0/${localPort(n)}</td></tr>`;
+  return {
+    role: 'en', chip: 'Edge Nodes (not drawn)', title: `EN-${f} … EN-${t}`, sub: `26 × C9300-48U + C9300-NM-8X · Group ${G} · same build and cabling as EN-${g === 1 ? 1 : 31}`,
+    tip: [`EN-${f} … EN-${t} · 26 more Edge Nodes`, 'C9300-48U + C9300-NM-8X (not drawn individually)', `EN-n: Te1/1/1 → ${NAME[ia]} · Te1/1/2 → ${NAME[ib]} Te1/0/${g === 1 ? 'n' : '(n−30)'}`],
+    html:
+      sec('What this represents', `<p>These are the 26 edge nodes between EN-${g === 1 ? '2' : '32'} and EN-${g === 1 ? '29' : '59'}, collapsed into one symbol. Together with the other representative nodes they make up <b>60 edge nodes in total</b>. Each switch is cabled exactly like EN-${g === 1 ? 1 : 31}.</p>`) +
+      sec('Aggregate', kv([['Uplinks', '52 × 10G SFP+ = 520 Gbps (26 to each intermediate)'], ['Access', '1,248 × 1G copper (26 × 48)'], ['Per switch', '2 × 10G up · 48 × 1G down · 2.4 : 1']])) +
+      sec('Uplink mapping', `<table class="d-table"><thead><tr><th>Edge</th><th>Te1/1/1 (A) →</th><th>Te1/1/2 (B) →</th></tr></thead><tbody>${rows}</tbody></table>`) +
+      sec('Hardware', EN_HW()) + sec('TCAM / SDM resources', EN_TCAM()) + sec('SD-Access scale · Catalyst 9300', EN_SDA()) +
+      refsLine(9, 10, 11)
+  };
+}
+function fusInfo(id) {
+  const nm = NAME[id], p = id === 'fus1' ? 23 : 24, peer = NAME[id === 'fus1' ? 'fus2' : 'fus1'];
+  return {
+    role: 'ext', chip: 'External', title: `${nm} · fusion router / firewall`, sub: 'Outside the fabric · not part of this BOM',
+    tip: [`${nm} · Fusion router / firewall · external`, 'Outside the fabric (not in the BOM)', `2 × 25G VRF-lite handoffs from CP/BN-1 and CP/BN-2 Twe1/0/${p}`],
+    html:
+      sec('Role', `<p>One of the two fusion devices, with ${peer}. It routes between VNs and shared services (DC AD/DNS, Internet, InfraWAN and DC). Each border hands off every VN to both fusion devices with VRF-lite: an 802.1Q VLAN/SVI and an eBGP session per VN (Catalyst Center IP transit).</p>`) +
+      sec('Links to the fabric', ifTable([
+        ['Fusion port (TBD)', 'Match to SFP28 25G', `CP/BN-1 Twe1/0/${p}`, 'Handoff'],
+        ['Fusion port (TBD)', 'Match to SFP28 25G', `CP/BN-2 Twe1/0/${p}`, 'Handoff']
+      ])) +
+      sec('Capacity', kv([['From the fabric', `2 × 25G = 50 Gbps into ${nm}, and 100 Gbps north–south across ${nm} and ${peer}`], ['Assumption', '25G is assumed. The SFP28 ports also run at 1 or 10G, and the fusion platform\'s ports and optics set the final speed.']])) +
+      sec('Redundancy role', `<p>Each border has one link to ${nm} and one to ${peer}. If ${nm} fails, both borders keep 25 Gbps each through ${peer}. How the two fusion devices back each other up depends on the platform, which is out of scope.</p>`)
+  };
+}
+DEV.fus1 = fusInfo('fus1'); DEV.fus2 = fusInfo('fus2'); DEV.cp1 = cpInfo('cp1'); DEV.cp2 = cpInfo('cp2');
+['int1', 'int2', 'int3', 'int4'].forEach(i => DEV[i] = intInfo(i));
+SLOTS.forEach(s => DEV[s.id] = s.r ? enxInfo(s.id) : enInfo(s.n));
+
+/* ---------------- draw ---------------- */
+const svg = $('#topo');
+const Ly = {};
+function build() {
+  const defs = S('defs', null, svg);
+  const pat = S('pattern', {id: 'dots', width: 24, height: 24, patternUnits: 'userSpaceOnUse'}, defs);
+  S('circle', {cx: 2, cy: 2, r: 1.1, class: 'gdot'}, pat);
+  S('rect', {x: -3200, y: -2400, width: 8000, height: 6000, class: 'bgrect', 'data-bg': '1'}, svg);
+  S('rect', {x: -3200, y: -2400, width: 8000, height: 6000, fill: 'url(#dots)', 'data-bg': '1'}, svg);
+  ['bands', 'links', 'devs', 'glyphs', 'pills', 'labels', 'annot'].forEach(k => Ly[k] = S('g', {class: 'ly-' + k}, svg));
+
+  // layer badges
+  const badge = (y, h, cls, lines) => {
+    const g = S('g', {class: 'badge ' + cls}, Ly.bands);
+    S('rect', {x: 16, y, width: 160, height: h, rx: 10, class: 'b'}, g);
+    S('rect', {x: 16, y: y + 10, width: 4, height: h - 20, rx: 2, class: 'bar'}, g);
+    lines.forEach(([dy, txt, c]) => T(g, 32, y + dy, txt, c));
+  };
+  badge(16, 48, 'ext', [[21, 'EXTERNAL', 'b-role'], [37, 'Outside the fabric', 'b-sub']]);
+  badge(CP_Y, CP_H, 'cp', [[40, '2×', 'b-count'], [60, 'CONTROL PLANE', 'b-role'], [78, 'C9500-24Y4C', 'b-model'], [95, 'CP/BN-1 · CP/BN-2', 'b-sub'], [110, '+ anywhere border · core', 'b-sub']]);
+  badge(300, 112, 'core', [[25, 'FABRIC CORE', 'b-role'], [43, 'Routed underlay', 'b-model'], [61, '8 × 100G QSFP28', 'b-sub'], [77, 'IS-IS · BFD · ECMP', 'b-sub'], [93, 'MTU 9100', 'b-sub']]);
+  badge(INT_Y, INT_H, 'int', [[40, '4×', 'b-count'], [60, 'INTERMEDIATE', 'b-role'], [78, 'C9400 · C9404R', 'b-model'], [95, 'SUP-2XL + LC-48XS', 'b-sub'], [110, '48-port 10G fiber LC', 'b-sub'], [130, 'Groups A and B × 2', 'b-sub'], [145, 'INT-A1 … INT-B2', 'b-sub']]);
+  badge(EN_Y, CHIP_Y + CHIP_H - EN_Y, 'en', [[40, '60×', 'b-count'], [60, 'EDGE NODES', 'b-role'], [78, 'C9300-48U', 'b-model'], [95, '+ C9300-NM-8X', 'b-sub'], [115, 'Groups A and B × 30', 'b-sub'], [130, 'EN-1 … EN-60', 'b-sub'], [150, '2,880 × 1G UPOE', 'b-sub'], [166, '≈ 2,000 users', 'b-sub']]);
+
+  // intermediate group containers
+  [[196, 'A', 'INT-A1 + INT-A2 · EN-1 – EN-30'], [904, 'B', 'INT-B1 + INT-B2 · EN-31 – EN-60']].forEach(([x, n, t2]) => {
+    const g = S('g', {class: 'grp'}, Ly.bands);
+    S('rect', {x, y: 428, width: 680, height: 244, rx: 12}, g);
+    T(Ly.annot, x + 340, 450, `INTERMEDIATE GROUP ${n}`, 'grp-t1 halo-int', {'text-anchor': 'middle'});
+    T(Ly.annot, x + 340, 466, t2, 'grp-t2 halo-int', {'text-anchor': 'middle'});
+  });
+
+  // links
+  LINKS.forEach(l => {
+    const g = S('g', {class: `link ${l.cls}${l.acc ? ' acc' : ''}`, 'data-link': l.id, tabindex: 0, role: 'button', 'aria-label': linkAria(l)}, Ly.links);
+    if (l.cls === 'lb10') S('path', {d: l.path, class: 'band'}, g);
+    if (l.lines) {
+      l.lines.forEach(d => S('path', {d, class: 'ln'}, g));
+      const c = l.chip;
+      S('rect', {x: c.cx - 34, y: EN_Y + EN_H, width: 68, height: CHIP_Y - EN_Y - EN_H, class: 'hitbox'}, g);
+      const cg = S('g', {class: 'chip'}, g);
+      S('rect', {x: c.cx - 59, y: CHIP_Y, width: 118, height: CHIP_H, rx: 7}, cg);
+      T(cg, c.cx, CHIP_Y + 17, c.t1, 'c1', {'text-anchor': 'middle'});
+      T(cg, c.cx, CHIP_Y + 31, c.t2, 'c2', {'text-anchor': 'middle'});
+    } else {
+      S('path', {d: l.path, class: 'ln'}, g);
+      S('path', {d: l.path, class: 'hit'}, g);
+    }
+  });
+
+  drawFus('fus1'); drawFus('fus2'); drawCP('cp1'); drawCP('cp2');
+  ['int1', 'int2', 'int3', 'int4'].forEach(drawINT);
+  SLOTS.forEach(drawEN);
+
+  // port glyphs, pills, labels
+  LINKS.forEach(l => {
+    l.ends.forEach(([x, y, side]) => {
+      const vert = side === 't' || side === 'b';
+      const w = vert ? 9 : 6, h = vert ? 6 : 9;
+      S('rect', {x: x - w / 2, y: y - h / 2, width: w, height: h, rx: 1.5, class: `pg ${l.cls === 'lb10' ? 'l10' : l.cls}${l.acc ? ' acc' : ''}`, 'data-for': l.id}, Ly.glyphs);
+    });
+    if (l.pill) pill(l.pill.at.x, l.pill.at.y, l.pill.txt, l.cls, l.id);
+    (l.labels || []).forEach(([x, y, txt, anchor]) => T(Ly.labels, x, y, txt, 'plabel halo', {'text-anchor': anchor || 'middle', 'data-for': l.id}));
+  });
+
+  // edge-node brackets and total
+  const A = Ly.annot;
+  [[205, 867, 536, 'Group A · EN-1 – EN-30 · dual-homed to INT-A1 / INT-A2'], [913, 1575, 1244, 'Group B · EN-31 – EN-60 · dual-homed to INT-B1 / INT-B2']].forEach(([x1, x2, cx, txt]) => {
+    S('path', {d: `M${x1},1020 V1030 H${x2} V1020 M${cx},1030 V1036`, class: 'brk'}, A);
+    T(A, cx, 1052, txt, 'brk-t', {'text-anchor': 'middle'});
+  });
+  const tt = T(A, 890, 1085, '60 EDGE NODES TOTAL', 'total-t', {'text-anchor': 'middle'});
+  const tw = tt.getComputedTextLength() || 260;
+  S('path', {d: `M205,1070 V1078 H${890 - tw / 2 - 16} M${890 + tw / 2 + 16},1078 H1575 V1070`, class: 'total-ln', fill: 'none'}, A);
+  T(A, 890, 1105, '60 × C9300-48U + C9300-NM-8X · 120 × 10G SFP+ uplinks · 2,880 × 1G UPOE access ports · sized for ≈ 2,000 users', 'total-s', {'text-anchor': 'middle'});
+}
+function linkAria(l) {
+  const sN = NAME[l.s.dev] || l.s.name, dN = l.d.dev ? (l.d.name || NAME[l.d.dev]) : l.d.name;
+  return `Link ${sN} ${l.s.short} to ${dN} ${l.d.short}, ${l.speed}, ${l.s.medium}. Open details.`;
+}
+function pill(x, y, txt, cls, id) {
+  const g = S('g', {class: 'pill ' + cls, 'data-for': id}, Ly.pills);
+  const r = S('rect', {}, g);
+  const t = T(g, x, y + 3.4, txt, '', {'text-anchor': 'middle'});
+  const w = (t.getComputedTextLength() || txt.length * 6) + 12;
+  r.setAttribute('x', x - w / 2); r.setAttribute('y', y - 8.5); r.setAttribute('width', w); r.setAttribute('height', 17); r.setAttribute('rx', 8.5);
+}
+function devGroup(id, cls) {
+  const d = DEV[id];
+  return S('g', {class: 'dev ' + cls, 'data-dev': id, tabindex: 0, role: 'button', 'aria-label': `${d.title}: ${d.tip[1]}. ${d.chip}. Open details.`}, Ly.devs);
+}
+function drawFus(id) {
+  const cx = FUSX[id], x = cx - FUS_W / 2, g = devGroup(id, 'ext');
+  S('rect', {x, y: FUS_Y, width: FUS_W, height: FUS_H, rx: 10, class: 'cardbg'}, g);
+  T(g, cx, FUS_Y + 21, `${NAME[id]} · Fusion router / firewall`, 't-ext', {'text-anchor': 'middle'});
+  T(g, cx, FUS_Y + 37, 'External · VRF-lite, eBGP per VN · not in BOM', 't-sub', {'text-anchor': 'middle'});
+  S('rect', {x, y: FUS_Y, width: FUS_W, height: FUS_H, rx: 10, class: 'card'}, g);
+}
+function cpPortTip(cp, p) {
+  const nm = NAME[cp], peer = NAME[cp === 'cp1' ? 'cp2' : 'cp1'], hu = cp === 'cp1' ? 6 : 7;
+  if (p <= 24) {
+    const b = `${nm} · Twe1/0/${p}|SFP28 · 1/10/25G`;
+    if (p <= 2) return `${b}|In use: 25G cross-link → ${peer} Twe1/0/${p}`;
+    if (p >= 23) return `${b}|In use: 25G handoff → FUS-${p - 22}`;
+    return `${b}|Spare`;
+  }
+  return `${nm} · Hu1/0/${p}|QSFP28 · 40/100G|In use: 100G downlink → ${NAME['int' + (p - 24)]} Hu2/0/${hu}`;
+}
+function drawCP(id) {
+  const cx = CPX[id], x = cx - CP_W / 2, y = CP_Y, g = devGroup(id, 'dev-cp');
+  S('rect', {x, y, width: CP_W, height: CP_H, rx: 10, class: 'cardbg'}, g);
+  S('path', {d: topRounded(x, y, CP_W, 28, 10), class: 'hdr-cp'}, g);
+  T(g, x + 12, y + 19.5, NAME[id], 'h-name');
+  T(g, x + CP_W - 12, y + 18.5, 'CONTROL PLANE + BORDER', 'h-role', {'text-anchor': 'end'});
+  T(g, x + 12, y + 46, 'Cisco Catalyst C9500-24Y4C', 't-model');
+  T(g, x + 12, y + 61, 'Co-located CP · anywhere border · core', 't-sub');
+  for (let p = 1; p <= 24; p++) {
+    const c = Math.floor((p - 1) / 2), r = (p - 1) % 2;
+    const cls = p <= 2 ? 'u25' : p >= 23 ? 'uho' : '';
+    S('rect', {x: x + 14 + c * 11, y: y + 69 + r * 7.5, width: 8.6, height: 6, rx: 1, class: 'port ' + cls, 'data-tip': cpPortTip(id, p)}, g);
+  }
+  for (let q = 0; q < 4; q++) S('rect', {x: x + 222 + q * 15, y: y + 69, width: 12, height: 13.5, rx: 1.5, class: 'port u100', 'data-tip': cpPortTip(id, 25 + q)}, g);
+  T(g, x + 14, y + 96, 'SFP28 × 24 · 1/10/25G', 't-cap');
+  T(g, x + 279, y + 96, 'QSFP28 × 4 · 40/100G', 't-cap', {'text-anchor': 'end'});
+  T(g, x + 12, y + 114, '↓ Hu1/0/25–28 · ↔ Twe1/0/1–2 · ↑ Twe1/0/23–24', 't-mono');
+  S('rect', {x, y, width: CP_W, height: CP_H, rx: 10, class: 'card'}, g);
+}
+function intLcTip(it, p) {
+  const nm = NAME[it], g = (it === 'int1' || it === 'int2') ? 1 : 2, tp = (it === 'int1' || it === 'int3') ? 1 : 2;
+  const b = `${nm} · Te1/0/${p}|SFP+ · 1/10G (C9400-LC-48XS, slot 1)`;
+  return p <= 30 ? `${b}|In use: 10G downlink → EN-${g === 1 ? p : p + 30} Te1/1/${tp}` : `${b}|Spare`;
+}
+function intSupTip(it, p) {
+  const nm = NAME[it], cpPort = 24 + (+it.slice(3));
+  if (p <= 4) return `${nm} · Twe2/0/${p}|SFP28 · 10/25G (SUP-2XL, slot 2)|Spare (no intermediate cross-link)`;
+  const b = `${nm} · Hu2/0/${p}|QSFP28 · 40/100G (SUP-2XL, slot 2)`;
+  if (p === 5) return `${b}|Spare: enabling port 5 disables Twe2/0/1–4`;
+  if (p === 6) return `${b}|In use: 100G uplink → CP/BN-1 Hu1/0/${cpPort}`;
+  if (p === 7) return `${b}|In use: 100G uplink → CP/BN-2 Hu1/0/${cpPort}`;
+  return `${b}|Spare`;
+}
+function drawINT(id) {
+  const cx = INTX[id], x = cx - INT_W / 2, y = INT_Y, g = devGroup(id, 'dev-int');
+  S('rect', {x, y, width: INT_W, height: INT_H, rx: 10, class: 'cardbg'}, g);
+  S('path', {d: topRounded(x, y, INT_W, 26, 10), class: 'hdr-int'}, g);
+  T(g, x + 12, y + 18.5, NAME[id], 'h-name');
+  T(g, x + INT_W - 12, y + 17.5, 'INTERMEDIATE', 'h-role', {'text-anchor': 'end'});
+  T(g, x + 12, y + 41, 'C9404R · C9400X-SUP-2XL · C9400-LC-48XS', 't-sub');
+  const rows = [48, 71, 94, 117];
+  rows.forEach((dy, i) => T(g, x + 12, y + dy + 13, 'S' + (i + 1), 't-sl'));
+  // slot 1: line card
+  let ry = y + rows[0];
+  S('rect', {x: x + 30, y: ry, width: 228, height: 19, rx: 3, class: 'slot'}, g);
+  T(g, x + 36, ry + 12.5, 'LC-48XS', 't-slot');
+  for (let p = 1; p <= 48; p++) {
+    const c = Math.floor((p - 1) / 2), r = (p - 1) % 2;
+    S('rect', {x: x + 84 + c * 6.2, y: ry + 3 + r * 7, width: 4.6, height: 6, rx: .8, class: 'port ' + (p <= 30 ? 'u10' : ''), 'data-tip': intLcTip(id, p)}, g);
+  }
+  T(g, x + 254, ry + 12.5, 'SFP+', 't-cap', {'text-anchor': 'end'});
+  // slot 2: supervisor
+  ry = y + rows[1];
+  S('rect', {x: x + 30, y: ry, width: 228, height: 19, rx: 3, class: 'slot'}, g);
+  T(g, x + 36, ry + 12.5, 'SUP-2XL', 't-slot');
+  for (let p = 1; p <= 4; p++) S('rect', {x: x + 86 + (p - 1) * 7.2, y: ry + 6.5, width: 5.6, height: 6, rx: .8, class: 'port', 'data-tip': intSupTip(id, p)}, g);
+  for (let p = 5; p <= 8; p++) {
+    const px = x + 120 + (p - 5) * 12.6;
+    S('rect', {x: px, y: ry + 3, width: 10.4, height: 13, rx: 1.2, class: 'port ' + (p === 6 || p === 7 ? 'u100' : ''), 'data-tip': intSupTip(id, p)}, g);
+  }
+  T(g, x + 254, ry + 12.5, '10/25G · 40/100G', 't-cap', {'text-anchor': 'end'});
+  // slots 3, 4
+  [[rows[2], 'Slot 3 · empty — optional 2nd SUP-2XL (SSO)'], [rows[3], 'Slot 4 · empty — growth line card']].forEach(([dy, txt]) => {
+    S('rect', {x: x + 30, y: y + dy, width: 228, height: 19, rx: 3, class: 'slot empty'}, g);
+    T(g, x + 144, y + dy + 12.5, txt, 't-empty', {'text-anchor': 'middle'});
+  });
+  T(g, x + 12, y + 152, '↑ Hu2/0/6–7 · ↓ Te1/0/1–30 · Twe2/0/1–4 spare', 't-mono');
+  S('rect', {x, y, width: INT_W, height: INT_H, rx: 10, class: 'card'}, g);
+}
+function drawEN(sl) {
+  const x = sl.cx - EN_W / 2, y = EN_Y;
+  if (sl.r) {
+    const g = devGroup(sl.id, 'dev-en enx');
+    S('rect', {x, y, width: EN_W, height: EN_H, rx: 8, class: 'cardbg'}, g);
+    S('path', {d: topRounded(x, y, EN_W, 22, 8), class: 'hdr-enx'}, g);
+    T(g, sl.cx, y + 15.5, `EN-${sl.r[0]} … EN-${sl.r[1]}`, 'h-name x', {'text-anchor': 'middle'});
+    T(g, sl.cx, y + 44, '• • •', 't-dots', {'text-anchor': 'middle'});
+    T(g, sl.cx, y + 62, '26 more C9300-48U', 't-sub s', {'text-anchor': 'middle'});
+    T(g, sl.cx, y + 77, '52 × 10G uplinks', 't-mono s', {'text-anchor': 'middle'});
+    S('rect', {x, y, width: EN_W, height: EN_H, rx: 8, class: 'card'}, g);
+    return;
+  }
+  const g = devGroup(sl.id, 'dev-en');
+  S('rect', {x, y, width: EN_W, height: EN_H, rx: 8, class: 'cardbg'}, g);
+  S('path', {d: topRounded(x, y, EN_W, 22, 8), class: 'hdr-en'}, g);
+  T(g, x + 8, y + 15.5, 'EN-' + sl.n, 'h-name s');
+  T(g, x + EN_W - 8, y + 15, 'EDGE', 'h-role s', {'text-anchor': 'end'});
+  T(g, x + 8, y + 38, 'C9300-48U', 't-model s');
+  T(g, x + 8, y + 52, '+ C9300-NM-8X', 't-sub s');
+  T(g, x + 8, y + 67, '↑ Te1/1/1–2 · 10G', 't-mono s');
+  T(g, x + 8, y + 81, '↓ Gi1/0/1–48 · 1G', 't-mono s');
+  S('rect', {x, y, width: EN_W, height: EN_H, rx: 8, class: 'card'}, g);
+}
+
+/* ---------------- tooltip ---------------- */
+const tip = $('#tip');
+let tipKey = null;
+function tipHTML(el) {
+  if (el.dataset.tip) {
+    const [a, b, c] = el.dataset.tip.split('|');
+    return `<div class="tt-t">${esc(a)}</div><div class="tt-s">${esc(b)}</div><div>${esc(c)}</div>`;
+  }
+  if (el.dataset.dev) {
+    const d = DEV[el.dataset.dev];
+    return `<div class="tt-t">${esc(d.tip[0])}</div><div>${esc(d.tip[1])}</div>${d.tip.slice(2).map(t => `<div class="tt-s">${esc(t)}</div>`).join('')}<div class="tt-f">Click for details</div>`;
+  }
+  const l = LMAP[el.dataset.link || el.dataset.for];
+  if (!l) return '';
+  const end = p => `<div><b>${esc(p.dev ? (p.name || NAME[p.dev]) : p.name)}</b><span class="mono">${esc(p.short)}</span><span class="tt-s">${esc(p.type)}</span><br><span class="tt-s">${esc(p.medium)} · ${esc(p.dir)}</span></div>`;
+  return `<div class="tt-t">${esc(l.speed)} · ${esc(l.s.medium)} link${l.n > 1 ? ` (${l.n.toLocaleString('en-US')} ports)` : ''}</div><div class="tt-ends">${end(l.s)}<div class="tt-arrow">→</div>${end(l.d)}</div><div class="tt-f">${esc(l.role)} · click for details</div>`;
+}
+function showTip(el, cx, cy) {
+  const key = el.dataset.tip || el.dataset.dev || el.dataset.link || el.dataset.for;
+  if (key !== tipKey) { tip.innerHTML = tipHTML(el); tipKey = key; }
+  tip.hidden = false;
+  const r = tip.getBoundingClientRect(), pad = 14;
+  let x = cx + pad, y = cy + pad;
+  if (x + r.width > innerWidth - 8) x = cx - r.width - pad;
+  if (y + r.height > innerHeight - 8) y = cy - r.height - pad;
+  tip.style.transform = `translate(${Math.max(8, x)}px, ${Math.max(8, y)}px)`;
+}
+function hideTip() { tip.hidden = true; tipKey = null; }
+
+/* ---------------- selection / filters ---------------- */
+let selEl = null, filter = null, lastFocus = null;
+function relatedTo(kind, id) {
+  const devs = new Set(), links = new Set();
+  if (kind === 'dev') { devs.add(id); LINKS.forEach(l => { if (l.a === id || l.b === id) { links.add(l.id); devs.add(l.a); if (l.b) devs.add(l.b); } }); }
+  else if (kind === 'link') { const l = LMAP[id]; links.add(id); devs.add(l.a); if (l.b) devs.add(l.b); }
+  else if (kind === 'cls') { LINKS.forEach(l => { if (l.cls === id) { links.add(l.id); devs.add(l.a); if (l.b) devs.add(l.b); } }); }
+  else if (kind === 'role') { Object.keys(DEV).forEach(d => { if (ROLE(d) === id) devs.add(d); }); LINKS.forEach(l => { if (devs.has(l.a) || (l.b && devs.has(l.b))) links.add(l.id); }); }
+  return {devs, links};
+}
+function applyDim(rel) {
+  $$('#topo [data-dev]').forEach(e => e.classList.toggle('dim', !!rel && !rel.devs.has(e.dataset.dev)));
+  $$('#topo [data-link]').forEach(e => e.classList.toggle('dim', !!rel && !rel.links.has(e.dataset.link)));
+  $$('#topo [data-for]').forEach(e => e.classList.toggle('dim', !!rel && !rel.links.has(e.dataset.for)));
+}
+function clearSel() { if (selEl) selEl.classList.remove('sel'); selEl = null; applyDim(filter ? relatedTo(filter.kind, filter.id) : null); }
+function setFilter(kind, id, btn) {
+  const same = filter && filter.kind === kind && filter.id === id;
+  $$('#legend .lg').forEach(b => b.setAttribute('aria-pressed', 'false'));
+  if (selEl) { selEl.classList.remove('sel'); selEl = null; closeDrawer(true); }
+  filter = same ? null : {kind, id};
+  if (filter) btn.setAttribute('aria-pressed', 'true');
+  applyDim(filter ? relatedTo(kind, id) : null);
+}
+const drawer = $('#drawer');
+function openFor(el, viaKey) {
+  hideTip();
+  if (selEl) selEl.classList.remove('sel');
+  filter = null; $$('#legend .lg').forEach(b => b.setAttribute('aria-pressed', 'false'));
+  let content;
+  if (el.dataset.dev) {
+    selEl = el; content = DEV[el.dataset.dev];
+    applyDim(relatedTo('dev', el.dataset.dev));
+    $('#dChip').innerHTML = `<span class="chip-role ${content.role}">${esc(content.chip)}</span>`;
+  } else {
+    const id = el.dataset.link || el.dataset.for, l = LMAP[id];
+    selEl = $(`#topo [data-link="${id}"]`);
+    applyDim(relatedTo('link', id));
+    content = linkContent(l);
+    $('#dChip').innerHTML = `<span class="chip-role lk"><span class="lk-dot" style="--lc:var(--${l.cls === 'lb10' ? 'l10' : l.cls})"></span>${esc(content.chip)}</span>`;
+  }
+  selEl.classList.add('sel');
+  $('#dTitle').textContent = content.title;
+  $('#dSub').textContent = content.sub;
+  $('#dBody').innerHTML = content.html;
+  $('#dBody').scrollTop = 0;
+  lastFocus = selEl;
+  drawer.classList.add('open');
+  if (viaKey) setTimeout(() => $('#dClose').focus(), 60);
+}
+function closeDrawer(keepDim) {
+  drawer.classList.remove('open');
+  if (!keepDim) clearSel();
+  if (lastFocus && drawer.contains(document.activeElement)) lastFocus.focus({preventScroll: true});
+}
+function portCard(p, label) {
+  const cls = p.sc === 'cu' ? 'cu' : p.sc === 'ho' ? 'ho' : 'fi ' + p.sc;
+  const devName = p.dev ? (p.name || NAME[p.dev]) : p.name;
+  return `<div class="pcard ${cls}"><div class="pc-lbl">${label}</div><div class="pc-dev">${esc(devName)}</div><div class="pc-model">${esc(p.model)}</div>` +
+    `<div class="pc-if">${esc(p.short)}</div><div class="pc-long">${esc(p.ifc)}</div><div class="pc-type">${esc(p.type)}</div>` +
+    `<div class="pc-med"><i></i>${esc(p.medium)}</div><div class="pc-speed">${esc(p.speed)}</div><span class="pc-dir">${esc(p.dir)}</span></div>`;
+}
+function linkContent(l) {
+  const kind = {l100: '100G fiber link', l25: '25G fiber link', l10: '10G fiber link', lb10: '10G fiber bundle', lcu: 'Copper access', lho: 'Border handoff'}[l.cls];
+  const sN = NAME[l.s.dev] || l.s.name, dN = l.d.dev ? (l.d.name || NAME[l.d.dev]) : l.d.name;
+  const refs = l.cls === 'l100' ? [1, 3, 5, 12, 14] : l.cls === 'l25' ? [1, 3, 12, 14, 16] : l.cls === 'lcu' ? [9] : l.cls === 'lho' ? [1, 3, 12, 16] : [6, 9, 12, 14];
+  return {
+    chip: kind, title: `${sN} → ${dN}`, sub: `${l.s.short} ↔ ${l.d.short} · ${l.speed}${l.n > 1 ? ` · represents ${l.n.toLocaleString('en-US')} physical ${l.cls === 'lcu' ? 'ports' : 'links'}` : ''}`,
+    html:
+      sec('Source and destination', `<div class="pcards">${portCard(l.s, 'Source')}<div class="pc-arrow" aria-hidden="true">→</div>${portCard(l.d, 'Destination')}</div>`) +
+      sec('Link', kv([
+        ['Medium', esc(l.medium)],
+        ['Speed', `<b>${esc(l.speed)}</b> (port supports ${esc(l.cap)})`],
+        ['Throughput', esc(l.thr)],
+        ['Direction', esc(l.role)],
+        ['Redundancy role', esc(l.red)],
+        ['L3 / underlay', esc(l.l3)]
+      ])) +
+      (l.cls === 'lho' ? '<p class="note">The fusion device is out of scope. Its port speed and optics determine the final handoff speed.</p>' : '') +
+      (l.cls !== 'lcu' && l.cls !== 'lho' ? '<p class="note">The optics are examples only. Pick SR (multimode) or LR (single-mode) by distance and check them in the Cisco TMG matrix.</p>' : '') +
+      refsLine(...refs)
+  };
+}
+
+/* ---------------- zoom & pan ---------------- */
+const canvas = $('#canvas');
+const VB0 = {x: 0, y: 0, w: 1600, h: 1120};
+const vb = Object.assign({}, VB0);
+function applyVB() {
+  svg.setAttribute('viewBox', `${vb.x.toFixed(2)} ${vb.y.toFixed(2)} ${vb.w.toFixed(2)} ${vb.h.toFixed(2)}`);
+  const k = VB0.w / vb.w;
+  $('#zLvl').textContent = Math.round(k * 100) + '%';
+  canvas.classList.toggle('zoomed', k > 1.02);
+}
+function clampVB() {
+  const mx = vb.w * 0.15, my = vb.h * 0.15;
+  vb.x = vb.w >= VB0.w ? (VB0.w - vb.w) / 2 : Math.min(VB0.w - vb.w + mx, Math.max(-mx, vb.x));
+  vb.y = vb.h >= VB0.h ? (VB0.h - vb.h) / 2 : Math.min(VB0.h - vb.h + my, Math.max(-my, vb.y));
+}
+function geom() {
+  const r = svg.getBoundingClientRect(), s = Math.min(r.width / vb.w, r.height / vb.h);
+  return {r, s, ox: (r.width - vb.w * s) / 2, oy: (r.height - vb.h * s) / 2};
+}
+function toSvg(cx, cy) { const {r, s, ox, oy} = geom(); return {x: vb.x + (cx - r.left - ox) / s, y: vb.y + (cy - r.top - oy) / s}; }
+function zoomTo(nw, cx, cy) {
+  const g = geom();
+  if (cx === undefined) { cx = g.r.left + g.r.width / 2; cy = g.r.top + g.r.height / 2; }
+  nw = Math.min(VB0.w * 1.1, Math.max(VB0.w / 8, nw));
+  const p = toSvg(cx, cy), f = nw / vb.w;
+  vb.x = p.x - (p.x - vb.x) * f; vb.y = p.y - (p.y - vb.y) * f; vb.w = nw; vb.h = vb.h * f;
+  clampVB(); applyVB();
+}
+const zoomBy = (k, cx, cy) => zoomTo(vb.w / k, cx, cy);
+function fit() { Object.assign(vb, VB0); applyVB(); }
+$('#zIn').addEventListener('click', () => zoomBy(1.4));
+$('#zOut').addEventListener('click', () => zoomBy(1 / 1.4));
+$('#zFit').addEventListener('click', fit);
+let hintT;
+canvas.addEventListener('wheel', e => {
+  if (!(e.ctrlKey || e.metaKey)) {
+    const h = $('#cHint'); h.classList.add('show'); clearTimeout(hintT); hintT = setTimeout(() => h.classList.remove('show'), 1200);
+    return;
+  }
+  e.preventDefault();
+  zoomBy(Math.exp(-e.deltaY * (e.deltaMode === 1 ? 0.05 : 0.0022)), e.clientX, e.clientY);
+}, {passive: false});
+const pts = new Map();
+let drag = null, pinch = null, suppressClick = false;
+canvas.addEventListener('pointerdown', e => {
+  if (e.pointerType === 'mouse' && e.button !== 0) return;
+  pts.set(e.pointerId, {x: e.clientX, y: e.clientY});
+  if (pts.size === 1) drag = {id: e.pointerId, x: e.clientX, y: e.clientY, vx: vb.x, vy: vb.y, moved: false};
+  else if (pts.size === 2) {
+    const [a, b] = [...pts.values()];
+    pinch = {d: Math.hypot(a.x - b.x, a.y - b.y) || 1, w: vb.w, h: vb.h, p: toSvg((a.x + b.x) / 2, (a.y + b.y) / 2)};
+    drag = null;
+  }
+});
+canvas.addEventListener('pointermove', e => {
+  if (!pts.has(e.pointerId)) return;
+  pts.set(e.pointerId, {x: e.clientX, y: e.clientY});
+  if (pinch && pts.size === 2) {
+    const [a, b] = [...pts.values()], d = Math.hypot(a.x - b.x, a.y - b.y) || 1;
+    const nw = Math.min(VB0.w * 1.1, Math.max(VB0.w / 8, pinch.w * pinch.d / d));
+    vb.w = nw; vb.h = pinch.h * nw / pinch.w;
+    const {r, s, ox, oy} = geom(), mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
+    vb.x = pinch.p.x - (mx - r.left - ox) / s; vb.y = pinch.p.y - (my - r.top - oy) / s;
+    clampVB(); applyVB(); suppressClick = true; e.preventDefault();
+    return;
+  }
+  if (!drag || e.pointerId !== drag.id) return;
+  const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+  if (!drag.moved && Math.hypot(dx, dy) > 4) {
+    drag.moved = true; hideTip(); canvas.classList.add('panning');
+    try { canvas.setPointerCapture(e.pointerId); } catch (_) {}
+  }
+  if (drag.moved) { const {s} = geom(); vb.x = drag.vx - dx / s; vb.y = drag.vy - dy / s; clampVB(); applyVB(); }
+});
+const endPtr = e => {
+  pts.delete(e.pointerId);
+  if (drag && drag.moved) suppressClick = true;
+  if (pts.size < 2) pinch = null;
+  if (pts.size === 0) { drag = null; canvas.classList.remove('panning'); setTimeout(() => { suppressClick = false; }, 0); }
+};
+canvas.addEventListener('pointerup', endPtr);
+canvas.addEventListener('pointercancel', endPtr);
+canvas.addEventListener('dblclick', e => { e.preventDefault(); zoomBy(1.8, e.clientX, e.clientY); });
+canvas.addEventListener('keydown', e => {
+  if (e.target !== canvas) return;
+  const step = vb.w * 0.1;
+  const k = e.key;
+  if (k === '+' || k === '=') zoomBy(1.3);
+  else if (k === '-' || k === '_') zoomBy(1 / 1.3);
+  else if (k === '0') fit();
+  else if (k === 'ArrowLeft') { vb.x -= step; clampVB(); applyVB(); }
+  else if (k === 'ArrowRight') { vb.x += step; clampVB(); applyVB(); }
+  else if (k === 'ArrowUp') { vb.y -= step; clampVB(); applyVB(); }
+  else if (k === 'ArrowDown') { vb.y += step; clampVB(); applyVB(); }
+  else return;
+  e.preventDefault();
+});
+
+/* ---------------- events ---------------- */
+const pick = t => t.closest('[data-dev],[data-link],.pill[data-for],.plabel[data-for],.pg[data-for]');
+svg.addEventListener('click', e => {
+  if (suppressClick) return;
+  const el = pick(e.target);
+  if (el) openFor(el, false);
+  else if (e.target.dataset.bg) { if (drawer.classList.contains('open')) closeDrawer(); else if (filter) { filter = null; $$('#legend .lg').forEach(b => b.setAttribute('aria-pressed', 'false')); applyDim(null); } }
+});
+svg.addEventListener('keydown', e => {
+  if (e.key !== 'Enter' && e.key !== ' ') return;
+  const el = e.target.closest('[data-dev],[data-link]');
+  if (el) { e.preventDefault(); openFor(el, true); }
+});
+svg.addEventListener('pointermove', e => {
+  if (e.pointerType !== 'mouse' || (drag && drag.moved)) return;
+  const el = e.target.closest('[data-tip]') || pick(e.target);
+  if (el) showTip(el, e.clientX, e.clientY); else hideTip();
+});
+svg.addEventListener('pointerleave', hideTip);
+svg.addEventListener('focusin', e => {
+  const el = e.target.closest('[data-dev],[data-link]');
+  if (!el) return;
+  const r = el.getBoundingClientRect();
+  showTip(el, r.left + Math.min(r.width, 40), r.bottom);
+});
+svg.addEventListener('focusout', hideTip);
+$('#dClose').addEventListener('click', () => closeDrawer());
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    if (drawer.classList.contains('open')) closeDrawer();
+    else if (filter) { filter = null; $$('#legend .lg').forEach(b => b.setAttribute('aria-pressed', 'false')); applyDim(null); }
+  }
+});
+$$('#legend .lg').forEach(b => b.addEventListener('click', () => b.dataset.role ? setFilter('role', b.dataset.role, b) : setFilter('cls', b.dataset.cls, b)));
+$$('.tgl').forEach(b => b.addEventListener('click', () => {
+  const on = b.getAttribute('aria-pressed') !== 'true';
+  b.setAttribute('aria-pressed', String(on));
+  svg.classList.toggle('hide-' + b.dataset.t, !on);
+}));
+
+/* ---------------- tables ---------------- */
+function buildLinkTable() {
+  const out = ['<thead><tr><th class="num">#</th><th>Source (uplink side)</th><th>Destination (downlink side)</th><th>Medium / transceiver</th><th>Speed</th><th class="num">Qty</th><th>Throughput</th><th>Role · redundancy</th></tr></thead><tbody>'];
+  let i = 0;
+  const grp = t => out.push(`<tr class="grp"><td colspan="8">${t}</td></tr>`);
+  const end = (dev, ifc, sub) => `<b>${dev}</b> <span class="mono">${ifc}</span><span class="sub">${sub}</span>`;
+  const row = (s, d, mc, mt, opt, sp, q, th, ro) => out.push(`<tr><td class="num">${++i}</td><td>${s}</td><td>${d}</td><td><span class="med ${mc}"><i></i>${mt}</span><span class="sub">${opt}</span></td><td>${sp}</td><td class="num">${q}</td><td>${th}</td><td>${ro}</td></tr>`);
+  grp('Fabric core: intermediate → CP/BN · 8 × 100G');
+  ['int1', 'int2', 'int3', 'int4'].forEach((it, ii) => ['cp1', 'cp2'].forEach((cp, ci) =>
+    row(end(NAME[it], 'Hu2/0/' + (6 + ci), 'C9400X-SUP-2XL · QSFP28 40/100G'), end(NAME[cp], 'Hu1/0/' + (25 + ii), 'C9500-24Y4C · QSFP28 40/100G'),
+      'f100', 'Fiber', 'QSFP28 · e.g. QSFP-100G-SR4-S / -LR4-S', '100 Gbps', 1, '100 Gbps', `Uplink ↔ downlink · ECMP 1 of 2 (other: ${NAME[ci ? 'cp1' : 'cp2']})`)));
+  grp('CP/BN cross-link · 2 × 25G');
+  [1, 2].forEach(k => row(end('CP/BN-1', 'Twe1/0/' + k, 'C9500-24Y4C · SFP28 1/10/25G'), end('CP/BN-2', 'Twe1/0/' + k, 'C9500-24Y4C · SFP28 1/10/25G'),
+    'f25', 'Fiber', 'SFP28 · e.g. SFP-25G-SR-S / SFP-10/25G-LR-S', '25 Gbps', 1, '25 Gbps', 'Cross-link · seed IS-IS link (no per-VN iBGP needed with LISP Pub/Sub)'));
+  grp('Edge uplinks · 120 × 10G');
+  [[1, 30, 'int1', 1, 'EN-n → Te1/0/n'], [1, 30, 'int2', 2, 'EN-n → Te1/0/n'], [31, 60, 'int3', 1, 'EN-n → Te1/0/(n−30)'], [31, 60, 'int4', 2, 'EN-n → Te1/0/(n−30)']].forEach(([f, t, it, tp, map]) =>
+    row(end(`EN-${f} … EN-${t}`, 'Te1/1/' + tp, 'C9300-48U · C9300-NM-8X · SFP+ 1/10G'), end(NAME[it], 'Te1/0/1–30', `C9400-LC-48XS · SFP+ 1/10G · ${map}`),
+      'f10', 'Fiber', 'SFP+ · e.g. SFP-10G-SR-S / SFP-10G-LR-S', '10 Gbps', 30, '300 Gbps total', `Uplink ${tp} ↔ downlink · ECMP 1 of 2`));
+  grp('Endpoint access · 2,880 × 1G copper');
+  row(end('EN-1 … EN-60', 'Gi1/0/1–48', 'C9300-48U · RJ-45 10/100/1000BASE-T · UPOE 60 W'), '<b>Endpoints</b><span class="sub">APs · IP phones · PCs (≈ 2,000 users)</span>',
+    'cu', 'Copper', 'Category 5e/6 · RJ-45', '1 Gbps', '2,880', '48 Gbps per EN', 'Access downlink · single-homed');
+  grp('Border handoff · 4 × 25G (fusion out of scope)');
+  ['cp1', 'cp2'].forEach(cp => [23, 24].forEach(p => row(end(NAME[cp], 'Twe1/0/' + p, 'C9500-24Y4C · SFP28 1/10/25G'), `<b>FUS-${p - 22}</b><span class="sub">Port depends on the fusion platform</span>`,
+    'ho', 'Fiber', 'SFP28 · matched to the fusion platform', '25 Gbps (assumed)', 1, '25 Gbps', 'Uplink (north–south) · VRF-lite, eBGP per VN')));
+  grp('Out-of-band management');
+  row(end('All 66 devices', 'Gi0/0', 'RJ-45 management port · Mgmt-vrf'), '<b>OOB management network</b><span class="sub">Not drawn</span>', 'cu', 'Copper', 'RJ-45', '—', 66, '—', 'Management only');
+  out.push('</tbody>');
+  $('#tblLinks').innerHTML = out.join('');
+  let h = '<thead><tr><th>Edge node</th><th>Group</th><th>Te1/1/1 · uplink 1 →</th><th>Te1/1/2 · uplink 2 →</th><th>Access ports</th></tr></thead><tbody>';
+  for (let n = 1; n <= 60; n++) {
+    const g = n <= 30 ? 1 : 2, [a, b] = grpInts(g), p = localPort(n);
+    h += `<tr><td><b>EN-${n}</b></td><td>Group ${GL(g)}</td><td class="mono">${NAME[a]} Te1/0/${p}</td><td class="mono">${NAME[b]} Te1/0/${p}</td><td class="mono">Gi1/0/1–48</td></tr>`;
+  }
+  $('#tblEN').innerHTML = h + '</tbody>';
+}
+function buildLadder() {
+  const L = [
+    {l: 'Access ports', s: '2,880 × 1G copper (RJ-45, UPOE)', v: 2880, c: 'var(--lcu)', t: '2,880 Gbps'},
+    {r: '2.4 : 1', t: 'at each edge node: 48G access vs 20G uplinks'},
+    {l: 'Edge uplinks', s: '120 × 10G SFP+ fiber', v: 1200, c: 'var(--l10)', t: '1,200 Gbps'},
+    {r: '1.5 : 1', t: 'at each intermediate: 300G down vs 200G up'},
+    {l: 'Fabric core', s: '8 × 100G QSFP28 fiber', v: 800, c: 'var(--l100)', t: '800 Gbps'},
+    {r: '8 : 1', t: 'north–south at each border: 400G core vs 50G handoff'},
+    {l: 'Border handoff', s: '4 × 25G SFP28 (assumed)', v: 100, c: 'var(--lho)', t: '100 Gbps'}
+  ];
+  $('#ladder').innerHTML = L.map(x => x.r
+    ? `<div class="rung"><span></span><div class="ratio"><b>${x.r}</b>${x.t}</div><span></span></div>`
+    : `<div class="rung"><div class="lbl">${x.l}<small>${x.s}</small></div><div class="bar" role="img" aria-label="${x.t}"><span style="width:${(x.v / 2880 * 100).toFixed(1)}%;--bc:${x.c}"></span></div><div class="val">${x.t}</div></div>`).join('');
+}
+function navSpy() {
+  const links = $$('.secnav a');
+  const secs = links.map(a => $(a.getAttribute('href'))).filter(Boolean);
+  let raf = 0;
+  const upd = () => {
+    raf = 0;
+    const y = innerHeight * 0.35;
+    let cur = null;
+    secs.forEach(s => { if (s.getBoundingClientRect().top <= y) cur = s; });
+    if (innerHeight + scrollY >= document.documentElement.scrollHeight - 4) cur = secs[secs.length - 1];
+    links.forEach(a => {
+      const on = !!cur && a.getAttribute('href') === '#' + cur.id;
+      a.classList.toggle('cur', on);
+      if (on) a.setAttribute('aria-current', 'location'); else a.removeAttribute('aria-current');
+    });
+  };
+  addEventListener('scroll', () => { if (!raf) raf = requestAnimationFrame(upd); }, {passive: true});
+  addEventListener('resize', upd);
+  upd();
+}
+
+build(); applyVB(); buildLinkTable(); buildLadder(); navSpy();
+})();
+
+</script>
+</body>
+</html>
